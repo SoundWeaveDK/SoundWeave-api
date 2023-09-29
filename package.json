@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "@fastify/env": "^4.2.0",
+    "@fastify/jwt": "^7.2.1",
+    "@prisma/client": "^5.3.1",
+    "bcrypt": "^5.1.1",
+    "fastify": "^4.23.2",
+    "fastify-plugin": "^4.5.1",
+    "fastify-zod": "^1.4.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/node": "^20.7.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0"
+  },
+  "scripts": {
+    "dev": "tsnd --respawn src/server.ts",
+    "migrate": "prisma migrate dev",
+    "resetdb": "prisma migrate reset"
+  }
+}
