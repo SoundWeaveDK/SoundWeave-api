@@ -1,6 +1,8 @@
 import Fastify from "fastify";
+import dotenv from "dotenv";
 import { userSchema } from "./schemas/userSchema";
 import userRoutes from "./routes/user.routes";
+import fastify from "fastify";
 const server = Fastify({
   logger: true,
 });
@@ -10,12 +12,16 @@ server.get("/", async function handler(request, reply) {
 });
 
 const start = async () => {
+  dotenv.config();
   for (const schema of userSchema) {
     server.addSchema(schema);
   }
   server.register(userRoutes, { prefix: "api/users" });
   try {
-    await server.listen({ port: 3000 });
+    const envPort: number = process.env.PORT
+      ? parseInt(process.env.PORT)
+      : 3000;
+    await server.listen({ port: envPort });
 
     const address = server.server.address();
     const port = typeof address === "string" ? address : address?.port;
