@@ -1,15 +1,32 @@
-import Fastify from "fastify";
+import Fastify, { FastifyRequest, FastifyReply } from "fastify";
 import dotenv from "dotenv";
 import { userSchema } from "./schemas/userSchema";
 import userRoutes from "./routes/user.routes";
 import fastify from "fastify";
-const server = Fastify({
+import fastifyJwt from "@fastify/jwt";
+export const server = Fastify({
   logger: true,
 });
 
-server.get("/", async function handler(request, reply) {
-  return "root route";
+
+declare module "fastify" {
+  interface FastifyInstance {
+    authenticate: any;
+  }
+}
+
+
+server.register(fastifyJwt, {
+  secret: "Dansker",
 });
+
+server.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
+  try {
+    await request.jwtVerify()
+  } catch (err) {
+    reply.send(err)
+  }
+})
 
 const start = async () => {
   dotenv.config();

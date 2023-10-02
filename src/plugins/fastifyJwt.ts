@@ -1,5 +1,5 @@
-import fastifyPlugin from 'fastify-plugin';
-import { FastifyInstance } from 'fastify';
+import fp from 'fastify-plugin';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { fastifyJwt } from '@fastify/jwt';
 
 /**
@@ -7,10 +7,22 @@ import { fastifyJwt } from '@fastify/jwt';
  *
  * @see https://github.com/fastify/fastify-jwt
  */
-export default fastifyPlugin(
-    async (fastify: FastifyInstance) => {
-        await fastify.register(fastifyJwt, {
-            secret: fastify.config.SECRET
-        });
-    }
-);
+
+/*
+module.exports = fp(async function (fastify, opts) {
+    fastify.register(fastifyJwt, {
+        secret: server.config.SECRET
+    })
+
+    fastify.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
+        try {
+            await request.jwtVerify()
+        } catch (err) {
+            reply.send(err)
+        }
+    })
+})
+*/
+
+
+
