@@ -7,9 +7,17 @@ const server = Fastify({
   logger: true,
 });
 
-server.get("/", async function handler(request, reply) {
-  return "root route";
+server.register(fastifyJwt, {
+  secret: "Dansker",
 });
+
+server.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
+  try {
+    await request.jwtVerify()
+  } catch (err) {
+    reply.send(err)
+  }
+})
 
 const start = async () => {
   dotenv.config();

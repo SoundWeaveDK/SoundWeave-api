@@ -27,10 +27,16 @@ async function userRoutes(server: FastifyInstance) {
         response: {
           200: $ref("loginResponseSchema"),
         },
-      },
-    },
-    loginHandler
-  );
+        loginHandler
+    );
+
+    server.get(
+        "/getusers",
+        {
+            preHandler: [server.authenticate]
+        },
+        getUsershandler
+    );
 }
 
 export default userRoutes;
