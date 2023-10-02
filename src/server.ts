@@ -1,16 +1,11 @@
-import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
-import { userSchema } from "../src/schemas/user.schema";
-import userRoutes from './routes/user.routes';
-import fastifyJwt from '@fastify/jwt';
-export const server = Fastify({
-  logger: true
-})
-
-declare module "fastify" {
-  export interface FastifyInstance {
-    authenticate: any;
-  }
-}
+import Fastify from "fastify";
+import dotenv from "dotenv";
+import { userSchema } from "./schemas/userSchema";
+import userRoutes from "./routes/user.routes";
+import fastify from "fastify";
+const server = Fastify({
+  logger: true,
+});
 
 server.register(fastifyJwt, {
   secret: "Dansker",
@@ -25,12 +20,16 @@ server.decorate("authenticate", async function (request: FastifyRequest, reply: 
 })
 
 const start = async () => {
+  dotenv.config();
   for (const schema of userSchema) {
     server.addSchema(schema);
   }
   server.register(userRoutes, { prefix: "api/users" });
   try {
-    await server.listen({ port: 3000 });
+    const envPort: number = process.env.PORT
+      ? parseInt(process.env.PORT)
+      : 3000;
+    await server.listen({ port: envPort, host: "0.0.0.0" });
 
     const address = server.server.address();
     const port = typeof address === "string" ? address : address?.port;

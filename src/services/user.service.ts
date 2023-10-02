@@ -1,23 +1,20 @@
 import prisma from "../utils/ormConnection";
 import { passwordEncryption } from "../utils/encryption";
-import { UserCreateInput } from "../schemas/user.schema"
-
-
+import { UserCreateInput } from "../schemas/userSchema";
 
 export async function registerUser(input: UserCreateInput) {
-    const hashPassword = passwordEncryption(input.password)
-    return await prisma.user.create({
-        data: {
-            email: input.email,
-            password: hashPassword,
-            username: input.username,
-            birthday: input.birthday,
-            country: input.country,
-            gender: input.gender
-        },
-    })
+  const hashPassword = passwordEncryption(input.password);
+  return await prisma.user.create({
+    data: {
+      email: input.email,
+      password: hashPassword,
+      username: input.username,
+      birthday: input.birthday,
+      country: input.country,
+      gender: input.gender,
+    },
+  });
 }
-
 
 export async function findUserByEmail(email: string) {
     return prisma.user.findUnique({
@@ -31,3 +28,4 @@ export async function findUserByEmail(email: string) {
 export async function findUsers() {
     return prisma.user.findMany();
 }
+
