@@ -1,9 +1,9 @@
 version: "3"
 services:
-  mariadb-dev:
+  db-dev:
     restart: unless-stopped
     image: "mariadb:10"
-    container_name: mariadb-dev
+    container_name: db-dev
     ports:
       - "3306:3306"
     environment:
@@ -17,10 +17,10 @@ services:
     networks:
       - soundweave-network
 
-  mariadb-test:
+  db-test:
     restart: unless-stopped
     image: "mariadb:10"
-    container_name: mariadb-test
+    container_name: db-test
     ports:
       - "3307:3307"
     environment:

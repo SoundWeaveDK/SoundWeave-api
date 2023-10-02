@@ -1,0 +1,71 @@
+name: Build and deploy Node.js app to Azure Web App - SoundWeave-backend
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: "18.x"
+
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
+      - name: Create .env file and get database URL
+        run: |
+          touch .env
+          echo DATABASE_URL=${{secrets.DATABASE_URL}} >> .env
+          cat .env
+
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+
+      - name: Zip artifact for deployment job
+        run: zip release.zip ./* -r
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: node-app
+          path: release.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    environment:
+      name: "Production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: node-app
+
+      - name: "Deploy to Azure Web App"
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "SoundWeave-backend"
+          slot-name: "Production"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_04002A553E86430A9FA60FE85755D4B7 }}
+          package: release.zip
