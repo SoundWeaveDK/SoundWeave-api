@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -34,8 +35,8 @@ jobs:
           echo DATABASE_URL=${{secrets.DATABASE_URL}} >> .env
           cat .env
 
-      - name: Run Prisma migrations
-        run: npx prisma migrate deploy
+      - name: Prisma generate and migrate
+        run: npx prisma generate && npx prisma migrate deploy
 
       - name: Zip artifact for deployment job
         run: zip release.zip ./* -r
