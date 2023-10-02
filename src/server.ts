@@ -1,11 +1,20 @@
-import Fastify from "fastify";
+import Fastify, { FastifyRequest, FastifyReply } from "fastify";
 import dotenv from "dotenv";
 import { userSchema } from "./schemas/userSchema";
 import userRoutes from "./routes/user.routes";
 import fastify from "fastify";
-const server = Fastify({
+import fastifyJwt from "@fastify/jwt";
+export const server = Fastify({
   logger: true,
 });
+
+
+declare module "fastify" {
+  interface FastifyInstance {
+    authenticate: any;
+  }
+}
+
 
 server.register(fastifyJwt, {
   secret: "Dansker",
