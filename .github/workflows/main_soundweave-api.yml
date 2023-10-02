@@ -1,4 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - SoundWeave-backend
+name: Build and deploy Node.js app to Azure Web App - SoundWeave-api
 
 on:
   push:
@@ -65,7 +65,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "SoundWeave-backend"
+          app-name: "SoundWeave-api"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_04002A553E86430A9FA60FE85755D4B7 }}
           package: release.zip
