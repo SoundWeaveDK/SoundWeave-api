@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import { userSchema } from "../src/schemas/user.schema";
+import { userSchema } from "./schemas/userSchema";
 import userRoutes from "./routes/user.routes";
 const server = Fastify({
   logger: true,
