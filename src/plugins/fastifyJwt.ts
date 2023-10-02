@@ -1,7 +1,6 @@
 import fp from 'fastify-plugin';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { fastifyJwt } from '@fastify/jwt';
-import { server } from '../server';
 
 /**
  * This plugins adds jwt to fastify
