@@ -1,18 +1,26 @@
 import fp from 'fastify-plugin';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { fastifyJwt } from '@fastify/jwt';
+import { FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
+import { JWT, fastifyJwt } from '@fastify/jwt';
 
 /**
  * This plugins adds jwt to fastify
  *
  * @see https://github.com/fastify/fastify-jwt
  */
+declare module "fastify" {
+    interface FastifyInstance {
+        authenticate: any;
+    }
+}
 
-/*
-module.exports = fp(async function (fastify, opts) {
-    fastify.register(fastifyJwt, {
-        secret: server.config.SECRET
+export let jwt: JWT;
+
+export default fp(async function (fastify: FastifyInstance, opts: FastifyPluginOptions) {
+    await fastify.register(fastifyJwt, {
+        secret: fastify.config.SECRET
     })
+
+    jwt = fastify.jwt
 
     fastify.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
         try {
@@ -22,7 +30,7 @@ module.exports = fp(async function (fastify, opts) {
         }
     })
 })
-*/
+
 
 
 
