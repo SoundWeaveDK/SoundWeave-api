@@ -31,7 +31,7 @@ Stop and remove containers and networks. If you wan't to remove volumes also use
 
 Click this [https://docs.docker.com/engine/reference/commandline/compose_down/](link) to view the documentation.
 
-### `dokcer ps`
+### `docker ps`
 
 List running containers. Use "-a" for a list of all running and not running containers in docker.
 
