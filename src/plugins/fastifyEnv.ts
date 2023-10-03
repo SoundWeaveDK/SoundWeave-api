@@ -1,5 +1,5 @@
-import fastifyPlugin from 'fastify-plugin';
-import { FastifyInstance } from 'fastify';
+import fp from 'fastify-plugin';
+import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { fastifyEnv } from "@fastify/env"
 
 
@@ -29,8 +29,6 @@ declare module "fastify" {
  *
  * @see https://github.com/fastify/fastify-env
  */
-export default fastifyPlugin(
-    async (fastify: FastifyInstance) => {
-        await fastify.register(fastifyEnv, options);
-    }
-);
+export default fp(async function (fastify: FastifyInstance, opts: FastifyPluginOptions) {
+    await fastify.register(fastifyEnv, options);
+});
