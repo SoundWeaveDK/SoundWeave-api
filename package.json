@@ -8,6 +8,7 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@fastify/cors": "^8.4.0",
     "@fastify/env": "^4.2.0",
     "@fastify/jwt": "^7.2.1",
     "@fastify/swagger": "^8.10.1",

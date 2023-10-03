@@ -5,6 +5,7 @@ import userRoutes from "./routes/user.routes";
 import fastifyJwt from "./plugins/fastifyJwt";
 import fastifyEnv from "./plugins/fastifyEnv";
 import fastifySwagger from "./plugins/fastifySwagger";
+import FastifyCors from "./plugins/FastifyCors";
 const server = Fastify({
   logger: true,
 });
@@ -16,6 +17,7 @@ const start = async () => {
   await server.register(fastifyEnv);
   await server.register(fastifyJwt);
   await server.register(fastifySwagger);
+  await server.register(FastifyCors);
 
 
 
