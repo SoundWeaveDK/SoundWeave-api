@@ -4,6 +4,7 @@ import { userSchema } from "./schemas/userSchema";
 import userRoutes from "./routes/user.routes";
 import fastifyJwt from "./plugins/fastifyJwt";
 import fastifyEnv from "./plugins/fastifyEnv";
+import fastifySwagger from "./plugins/fastifySwagger";
 const server = Fastify({
   logger: true,
 });
@@ -14,6 +15,7 @@ const start = async () => {
 
   await server.register(fastifyEnv);
   await server.register(fastifyJwt);
+  await server.register(fastifySwagger);
 
 
 
