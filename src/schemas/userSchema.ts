@@ -51,6 +51,12 @@ const loginSchema = z.object({
 
 const loginResponseSchema = z.object({
     accessToken: z.string(),
+    user: z.object({
+        username: z.string({
+            required_error: "Username is required",
+            invalid_type_error: "Username must be a string",
+        }),
+    })
 });
 
 export type UserCreateInput = z.infer<typeof createUserSchema>
