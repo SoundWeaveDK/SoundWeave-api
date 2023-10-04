@@ -1,15 +1,15 @@
 import Fastify, { FastifyRequest, FastifyReply } from "fastify";
 import dotenv from "dotenv";
-import { userSchema } from "./schemas/userSchema";
-import userRoutes from "./routes/user.routes";
-import fastifyJwt from "./plugins/fastifyJwt";
-import fastifyEnv from "./plugins/fastifyEnv";
-import fastifySwagger from "./plugins/fastifySwagger";
-import FastifyCors from "./plugins/FastifyCors";
+import { userSchema } from "./schemas/user-schema";
+import userRoutes from "./routes/user-routes";
+import azureStorageRoutes from "./routes/azure-storage-routes-test";
+import fastifyJwt from "./plugins/fastify-jwt";
+import fastifyEnv from "./plugins/fastify-env";
+import fastifySwagger from "./plugins/fastify-swagger";
+import FastifyCors from "./plugins/fastify-cors";
 const server = Fastify({
   logger: true,
 });
-
 
 const start = async () => {
   dotenv.config();
@@ -19,13 +19,12 @@ const start = async () => {
   await server.register(fastifySwagger);
   await server.register(FastifyCors);
 
-
-
   for (const schema of userSchema) {
     server.addSchema(schema);
   }
 
   server.register(userRoutes, { prefix: "api/users" });
+  server.register(azureStorageRoutes, { prefix: "api/azurestorage" });
 
   try {
     const envPort: number = process.env.PORT
