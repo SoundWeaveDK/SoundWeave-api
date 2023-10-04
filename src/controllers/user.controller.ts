@@ -30,19 +30,15 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
 
     const checkpassword = verifyPassword(body.password, user.password);
 
-    const testData = "Dansker"
-
     if (checkpassword) {
-        return { accessToken: jwt.sign({ testData }) };
+        const accessToken = jwt.sign({ exp: 864000 })
+        return reply.code(200).send({ accessToken, user });
     }
 
-    if (!user) {
-        return reply.code(401).send({
-            messages: "invalid email or password",
-        });
-    }
+    return reply.code(401).send({
+        messages: "invalid email or password",
+    });
 }
-
 
 
 export async function getUsershandler() {
