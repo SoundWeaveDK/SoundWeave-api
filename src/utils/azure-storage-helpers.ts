@@ -5,11 +5,12 @@ import {
 } from "@azure/storage-blob";
 import { DefaultAzureCredential } from "@azure/identity";
 
-const ONE_HOUR: any = 1 * 60 * 60 * 1000;
+const TWENTYFOUR_HOURS: any = 24 * 60 * 60 * 1000;
 const PRODUCTION: boolean = process.env.NODE_ENV === "production";
 const AZURITEACCOUNTKEY: any = process.env.AZURITEACCOUNTKEY;
 
 // Create a service SAS for a blob
+// This function only works in the NODE.JS runtime
 export async function createSASToken(
   accountName: string,
   blobClient: any,
@@ -20,18 +21,16 @@ export async function createSASToken(
   const sasOptions: any = {
     containerName: containerClient.containerName,
     blobName: blobName,
-    startsOn: new Date(new Date().valueOf() - ONE_HOUR),
-    expiresOn: new Date(new Date().valueOf() + ONE_HOUR),
+    startsOn: new Date(new Date().valueOf() - TWENTYFOUR_HOURS),
+    expiresOn: new Date(new Date().valueOf() + TWENTYFOUR_HOURS),
     permissions: BlobSASPermissions.parse("r"),
   };
-  // If we're in prod that means we're using managed identity, so we need to get a user delegation key by using the blob client
-  // This function does not work after compilation since it is ONLY AVAILABLE IN NODE.JS RUNTIME.
-  // I don't know how to fix this, so I'm just going to leave it as is. pog
+
   const userDelegationKey = PRODUCTION
     ? await blobClient.getUserDelegationKey(
-        new Date(new Date().valueOf() - ONE_HOUR),
-        new Date(new Date().valueOf() + ONE_HOUR)
-      )
+      new Date(new Date().valueOf() - TWENTYFOUR_HOURS),
+      new Date(new Date().valueOf() + TWENTYFOUR_HOURS)
+    )
     : null;
 
   const sasToken = generateBlobSASQueryParameters(
