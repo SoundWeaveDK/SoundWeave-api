@@ -6,6 +6,7 @@ import fastifyJwt from "./plugins/fastifyJwt";
 import fastifyEnv from "./plugins/fastifyEnv";
 import fastifySwagger from "./plugins/fastifySwagger";
 import FastifyCors from "./plugins/FastifyCors";
+import podcastRoutes from "./routes/podcast-route";
 const server = Fastify({
   logger: true,
 });
@@ -26,6 +27,7 @@ const start = async () => {
   }
 
   server.register(userRoutes, { prefix: "api/users" });
+  server.register(podcastRoutes, { prefix: "api/podcast" });
 
   try {
     const envPort: number = process.env.PORT

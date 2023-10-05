@@ -40,8 +40,8 @@ model Podcast {
     filename               String
     Podcast_viewed_by_user Podcast_viewed_by_user[]
     Podcast_liked_by_user  Podcast_liked_by_user[]
-    fk_comment_id          Comment                  @relation(fields: [commentId], references: [id])
-    commentId              Int
+    fk_comment_id          Comment?                 @relation(fields: [commentId], references: [id])
+    commentId              Int?
     Watch_later            Watch_later[]
     createdAt              DateTime                 @default(now())
 }
