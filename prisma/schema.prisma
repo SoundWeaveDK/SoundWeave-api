@@ -16,8 +16,6 @@ model User {
     email                  String                   @unique
     password               String
     birthday               String
-    country                String
-    gender                 String
     createdAt              DateTime                 @default(now())
     followedBy             User[]                   @relation("Userfollows")
     following              User[]                   @relation("Userfollows")
@@ -25,8 +23,8 @@ model User {
     genderId               Int
     fk_country_id          Country                  @relation(fields: [countryId], references: [id])
     countryId              Int
-    fk_comment_id          Comment                  @relation(fields: [commentId], references: [id])
-    commentId              Int
+    fk_comment_id          Comment?                 @relation(fields: [commentId], references: [id])
+    commentId              Int?
     Podcast_viewed_by_user Podcast_viewed_by_user[]
     Podcast_liked_by_user  Podcast_liked_by_user[]
     Comments_liked         Comments_liked[]

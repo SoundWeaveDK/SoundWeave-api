@@ -23,11 +23,11 @@ const createUserSchema = z.object({
         required_error: "Birthday is required",
         invalid_type_error: "Birthday must be a date",
     }),
-    country: z.string({
+    country: z.number({
         required_error: "Country is required",
         invalid_type_error: "Country must be a string",
     }),
-    gender: z.string({
+    gender: z.number({
         required_error: "Gender is required",
         invalid_type_error: "Gender must be a string",
     })
