@@ -1,6 +1,7 @@
 import Fastify, { FastifyRequest, FastifyReply } from "fastify";
 import dotenv from "dotenv";
 import { userSchema } from "./schemas/userSchema";
+import { podcastSchema } from "./schemas/podcast-schemas";
 import userRoutes from "./routes/user.routes";
 import fastifyJwt from "./plugins/fastifyJwt";
 import fastifyEnv from "./plugins/fastifyEnv";
@@ -22,9 +23,12 @@ const start = async () => {
 
 
 
-  for (const schema of userSchema) {
+  for (const schema of [...userSchema, ...podcastSchema]) {
     server.addSchema(schema);
   }
+
+
+
 
   server.register(userRoutes, { prefix: "api/users" });
   server.register(podcastRoutes, { prefix: "api/podcast" });
