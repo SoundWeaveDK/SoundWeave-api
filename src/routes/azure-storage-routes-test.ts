@@ -52,13 +52,17 @@ async function azureStorageRoutes(server: FastifyInstance) {
     }
   );
 
-  server.post(
+  server.get(
     "/getuploadsastoken",
     {
       schema: {
-        body: {
-          type: "object",
-          properties: {},
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              sasToken: { type: "string" },
+            },
+          },
         },
       },
     },
