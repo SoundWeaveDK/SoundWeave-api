@@ -10,6 +10,8 @@ import FastifyCors from "./plugins/FastifyCors";
 import podcastRoutes from "./routes/podcast-route";
 import { countrySchema } from "./schemas/country-schema";
 import countryRoutes from "./routes/country-route";
+import genderRoutes from "./routes/gender-route";
+import { genderSchema } from "./schemas/gender-schema";
 const server = Fastify({
   logger: true,
 });
@@ -23,13 +25,14 @@ const start = async () => {
   await server.register(fastifySwagger);
   await server.register(FastifyCors);
 
-  for (const schema of [...userSchema, ...podcastSchema, ...countrySchema]) {
+  for (const schema of [...userSchema, ...podcastSchema, ...countrySchema, ...genderSchema]) {
     server.addSchema(schema);
   }
 
   server.register(userRoutes, { prefix: "api/user" });
   server.register(podcastRoutes, { prefix: "api/podcast" });
   server.register(countryRoutes, { prefix: "api/country" });
+  server.register(genderRoutes, { prefix: "api/gender" });
 
   try {
     const envPort: number = process.env.PORT

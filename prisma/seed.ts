@@ -20,7 +20,7 @@ const GENDER = [
 
 
 async function main() {
-    Promise.all(COUNTRY_NAME.map(n => prisma.country.create({ data: { contry_name: n } })));
+    Promise.all(COUNTRY_NAME.map(n => prisma.country.create({ data: { country_name: n } })));
     Promise.all(GENDER.map(n => prisma.gender.create({ data: { gender_name: n } })));
     console.log("Done seeding database");
 }

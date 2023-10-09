@@ -5,14 +5,6 @@ import { $ref } from "../schemas/country-schema";
 async function countryRoutes(server: FastifyInstance) {
     server.get(
         "/read-countrys",
-        {
-            schema: {
-                response: {
-                    200: $ref("readCountryResponseSchema"),
-                },
-            },
-
-        },
         readCountryHandler
     );
 }
