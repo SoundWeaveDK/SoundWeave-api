@@ -1,39 +1,40 @@
 import Fastify, { FastifyRequest, FastifyReply } from "fastify";
 import dotenv from "dotenv";
-import { userSchema } from "./schemas/userSchema";
-import userRoutes from "./routes/user.routes";
-import fastify from "fastify";
-import fastifyJwt from "@fastify/jwt";
-export const server = Fastify({
+import { userSchema } from "./schemas/user-schema";
+import azureStorageRoutes from "./routes/azure-storage-routes-test";
+import { podcastSchema } from "./schemas/podcast-schemas";
+import userRoutes from "./routes/user-routes";
+import fastifyJwt from "./plugins/fastify-jwt";
+import fastifyEnv from "./plugins/fastify-env";
+import fastifySwagger from "./plugins/fastify-swagger";
+import FastifyCors from "./plugins/fastify-cors";
+import podcastRoutes from "./routes/podcast-route";
+import { countrySchema } from "./schemas/country-schema";
+import countryRoutes from "./routes/country-route";
+import genderRoutes from "./routes/gender-route";
+import { genderSchema } from "./schemas/gender-schema";
+const server = Fastify({
   logger: true,
 });
 
-
-declare module "fastify" {
-  interface FastifyInstance {
-    authenticate: any;
-  }
-}
-
-
-server.register(fastifyJwt, {
-  secret: "Dansker",
-});
-
-server.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {
-  try {
-    await request.jwtVerify()
-  } catch (err) {
-    reply.send(err)
-  }
-})
-
 const start = async () => {
   dotenv.config();
-  for (const schema of userSchema) {
+
+  await server.register(fastifyEnv);
+  await server.register(fastifyJwt);
+  await server.register(fastifySwagger);
+  await server.register(FastifyCors);
+
+  for (const schema of [...userSchema, ...podcastSchema, ...countrySchema, ...genderSchema]) {
     server.addSchema(schema);
   }
-  server.register(userRoutes, { prefix: "api/users" });
+
+  server.register(userRoutes, { prefix: "api/user" });
+  server.register(podcastRoutes, { prefix: "api/podcast" });
+  server.register(countryRoutes, { prefix: "api/country" });
+  server.register(genderRoutes, { prefix: "api/gender" });
+  server.register(azureStorageRoutes, { prefix: "api/azurestorage" });
+
   try {
     const envPort: number = process.env.PORT
       ? parseInt(process.env.PORT)

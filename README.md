@@ -38,3 +38,10 @@ List running containers. Use "-a" for a list of all running and not running cont
 
 Click this [https://docs.docker.com/engine/reference/commandline/ps/](link) to view the documentation.
 
+
+# Kown errors and how to fix 
+## Prisma error
+### EPERM: operation not permitted, unlink
+First shutdown your node.js server, then reboot your docker container.
+Run " npx prisma generate " and then "npx prisma migrate dev"
+That should fix your error
