@@ -10,8 +10,8 @@ export async function registerUser(input: UserCreateInput) {
       password: hashPassword,
       username: input.username,
       birthday: input.birthday,
-      countryId: input.country,
-      genderId: input.gender,
+      countryId: input.countryId,
+      genderId: input.genderId,
     },
   });
 }
@@ -20,7 +20,20 @@ export async function findUserByEmail(email: string) {
   return prisma.user.findUnique({
     where: {
       email,
-    }
+    },
+    include: {
+      fk_country_id: {
+        select: {
+          country_name: true,
+        }
+      },
+      fk_gender_id: {
+        select: {
+          gender_name: true
+        }
+      }
+    },
+
   })
 }
 

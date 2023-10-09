@@ -23,11 +23,11 @@ const createUserSchema = z.object({
     required_error: "Birthday is required",
     invalid_type_error: "Birthday must be a date",
   }),
-  country: z.number({
+  countryId: z.number({
     required_error: "Country is required",
     invalid_type_error: "Country must be a string",
   }),
-  gender: z.number({
+  genderId: z.number({
     required_error: "Gender is required",
     invalid_type_error: "Gender must be a string",
   })
@@ -52,10 +52,18 @@ const loginSchema = z.object({
 const loginResponseSchema = z.object({
   accessToken: z.string(),
   user: z.object({
-    username: z.string({
-      required_error: "Username is required",
-      invalid_type_error: "Username must be a string",
+    username: z.string(),
+    email: z.string().email(),
+    birthday: z.string(),
+    countryId: z.string(),
+    genderId: z.string(),
+    createdAt: z.date(),
+    fk_country_id: z.object({
+      country_name: z.string(),
     }),
+    fk_gender_id: z.object({
+      gender_name: z.string(),
+    })
   })
 });
 
