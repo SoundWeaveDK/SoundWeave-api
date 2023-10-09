@@ -37,7 +37,9 @@ model Podcast {
     views                  BigInt?
     likes                  BigInt?
     money                  Float?
+    description            String?
     podcast_file           String
+    thumbnail              String
     Podcast_viewed_by_user Podcast_viewed_by_user[]
     Podcast_liked_by_user  Podcast_liked_by_user[]
     Watch_later            Watch_later[]
