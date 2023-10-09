@@ -79,7 +79,7 @@ export const GetSinglePodcast = async (blobName: string): Promise<string> => {
 };
 
 // Generate a SAS token for uploading blobs from the frontend
-export const UploadSASToken = async (containerName: string) => {
+export const UploadSASToken = async () => {
   try {
     const PRODUCTION: boolean = process.env.NODE_ENV === "production";
 
@@ -93,10 +93,9 @@ export const UploadSASToken = async (containerName: string) => {
     const auth: any = await azureAuth(ACCOUNTNAME);
 
     const sasOptions = {
-
       services: AccountSASServices.parse("b").toString(),          // blobs
       resourceTypes: AccountSASResourceTypes.parse("sco").toString(), // service, container, object
-      permissions: AccountSASPermissions.parse("wu"),          // permissions: write, update, options
+      permissions: AccountSASPermissions.parse("wu"),          // permissions: write, update
       protocol: SASProtocol.HttpsAndHttp,
       startsOn: new Date(),
       expiresOn: new Date(new Date().valueOf() + (10 * 60 * 1000)),   // 10 minutes

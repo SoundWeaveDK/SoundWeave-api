@@ -58,16 +58,14 @@ async function azureStorageRoutes(server: FastifyInstance) {
       schema: {
         body: {
           type: "object",
-          properties: {
-            containername: { type: "string" },
-          },
+          properties: {},
         },
       },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const body: any = request.body;
       try {
-        const sasToken = await UploadSASToken(body.containername);
+        const sasToken = await UploadSASToken();
         return reply.code(200).send(sasToken);
       } catch (err: any) {
         return reply.code(404).send(err.message);
