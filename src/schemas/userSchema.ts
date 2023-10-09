@@ -6,7 +6,7 @@ const userCore = {
     email: z.string({
         required_error: "Email is required",
         invalid_type_error: "Email must be a string",
-    }).email(),
+    }).email({ message: "Invalid email address" }),
     username: z.string({
         required_error: "Username is required",
         invalid_type_error: "Username must be a string",
@@ -59,11 +59,15 @@ const loginResponseSchema = z.object({
     })
 });
 
-export type UserCreateInput = z.infer<typeof createUserSchema>
-export type LoginInput = z.infer<typeof loginSchema>
-export const { schemas: userSchema, $ref } = buildJsonSchemas({
+const models = {
     createUserSchema,
     createUserResponseSchema,
     loginSchema,
     loginResponseSchema
-})
+}
+
+
+
+export type UserCreateInput = z.infer<typeof createUserSchema>
+export type LoginInput = z.infer<typeof loginSchema>
+export const { schemas: userSchema, $ref } = buildJsonSchemas(models, { $id: "userSchemas" })
