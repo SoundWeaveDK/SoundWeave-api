@@ -31,7 +31,7 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
     const checkpassword = verifyPassword(body.password, user.password);
 
     if (checkpassword) {
-        const accessToken = jwt.sign({ expiresIn: '10d' });
+        const accessToken = jwt.sign({ userId: user.id, expiresIn: '10d' });
         return reply.code(200).send({ accessToken, user });
     }
 

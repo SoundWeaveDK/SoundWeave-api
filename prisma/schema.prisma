@@ -28,6 +28,7 @@ model User {
     Comments_liked         Comments_liked[]
     Watch_later            Watch_later[]
     Comment                Comment[]
+    Podcast                Podcast[]
 }
 
 model Podcast {
@@ -42,6 +43,8 @@ model Podcast {
     Watch_later            Watch_later[]
     createdAt              DateTime                 @default(now())
     Comment                Comment[]
+    fk_user_id             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId                 Int
 }
 
 model Gender {

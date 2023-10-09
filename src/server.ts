@@ -21,16 +21,11 @@ const start = async () => {
   await server.register(fastifySwagger);
   await server.register(FastifyCors);
 
-
-
   for (const schema of [...userSchema, ...podcastSchema]) {
     server.addSchema(schema);
   }
 
-
-
-
-  server.register(userRoutes, { prefix: "api/users" });
+  server.register(userRoutes, { prefix: "api/user" });
   server.register(podcastRoutes, { prefix: "api/podcast" });
 
   try {
