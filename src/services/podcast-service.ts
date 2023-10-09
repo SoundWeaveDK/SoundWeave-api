@@ -1,4 +1,4 @@
-import prisma from "../utils/ormConnection";
+import prisma from "../utils/orm-connection";
 import { PodcastCreateInput, ReadSinglePodcastSchema, deletePodcastSchema } from "../schemas/podcast-schemas";
 
 export async function createPodcast(input: PodcastCreateInput) {

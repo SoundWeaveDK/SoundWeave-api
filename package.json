@@ -9,6 +9,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@azure/identity": "^3.3.0",
+    "@azure/storage-blob": "^12.16.0",
     "@fastify/cors": "^8.4.0",
     "@fastify/env": "^4.2.0",
     "@fastify/jwt": "^7.2.1",

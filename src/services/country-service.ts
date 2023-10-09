@@ -1,4 +1,4 @@
-import prisma from "../utils/ormConnection";
+import prisma from "../utils/orm-connection";
 import { ReadCountry } from "../schemas/country-schema";
 
 
