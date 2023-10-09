@@ -34,9 +34,9 @@ model User {
 model Podcast {
     id                     Int                      @id @default(autoincrement())
     podcast_name           String
-    views                  BigInt?
-    likes                  BigInt?
-    money                  Float?
+    views                  Int                      @default(0)
+    likes                  Int                      @default(0)
+    money                  Float                    @default(0)
     description            String?
     podcast_file           String
     thumbnail              String
