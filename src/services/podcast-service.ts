@@ -1,31 +1,41 @@
 import prisma from "../utils/orm-connection";
 import { PodcastCreateInput, ReadSinglePodcastSchema, deletePodcastSchema } from "../schemas/podcast-schemas";
+import { GetSingleImage } from "../utils/azure-storage";
 
 export async function createPodcast(input: PodcastCreateInput) {
     return await prisma.podcast.create({
         data: {
             userId: input.userId,
             podcast_name: input.podcast_name,
-            podcast_file: input.podcast_file
+            podcast_file: input.podcast_file,
+            description: input.description,
+            thumbnail: input.thumbnail
         }
     });
 }
 
 
 export async function findSinglePodcast(input: ReadSinglePodcastSchema) {
+    let podcast = await prisma.podcast.findUnique({
+        where: {
+            id: input.id
+        },
+
+    })
+
+
+}
+
+export async function getAllUsersFollowPodcasts(input: ReadSinglePodcastSchema) {
     return await prisma.podcast.findUnique({
         where: {
             id: input.id
         },
-        include: {
-            Comment: {
-                where: {
-                    podcastId: input.id
-                }
-            }
-        }
     })
 }
+
+
+
 
 
 export async function updatePodcast(input: PodcastCreateInput) {

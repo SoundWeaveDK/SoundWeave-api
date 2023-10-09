@@ -3,6 +3,7 @@ import { createPodcastHandler, deletePodcastHandler, readSinglePodcastHandler, u
 import { $ref } from "../schemas/podcast-schemas";
 
 async function podcastRoutes(server: FastifyInstance) {
+    //CRUD routes
     server.post(
         "/create-podcast",
         {
@@ -17,6 +18,8 @@ async function podcastRoutes(server: FastifyInstance) {
         },
         createPodcastHandler
     );
+
+
 
     server.get(
         "/read-single-podcast/:id",
@@ -62,6 +65,9 @@ async function podcastRoutes(server: FastifyInstance) {
         },
         deletePodcastHandler
     );
+
+
+
 }
 
 export default podcastRoutes;

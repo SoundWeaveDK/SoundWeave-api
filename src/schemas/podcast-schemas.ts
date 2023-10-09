@@ -15,6 +15,12 @@ const podcastCore = {
         required_error: "Podcast name is required",
         invalid_type_error: "Podcast name must be a string",
     }),
+    description: z.string(),
+    thumbnail: z.string({
+        required_error: "Thumbnail is required",
+        invalid_type_error: "Thumbnail must be a string",
+    })
+
 }
 
 
@@ -72,6 +78,8 @@ const deletePodcastRequestSchema = z.object({
         invalid_type_error: "Podcast name must be a number",
     }),
 });
+
+
 
 const models = {
     createPodcastRequestSchema,
