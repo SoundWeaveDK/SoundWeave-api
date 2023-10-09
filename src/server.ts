@@ -8,6 +8,8 @@ import fastifyEnv from "./plugins/fastifyEnv";
 import fastifySwagger from "./plugins/fastifySwagger";
 import FastifyCors from "./plugins/FastifyCors";
 import podcastRoutes from "./routes/podcast-route";
+import { countrySchema } from "./schemas/country-schema";
+import countryRoutes from "./routes/country-route";
 const server = Fastify({
   logger: true,
 });
@@ -21,12 +23,13 @@ const start = async () => {
   await server.register(fastifySwagger);
   await server.register(FastifyCors);
 
-  for (const schema of [...userSchema, ...podcastSchema]) {
+  for (const schema of [...userSchema, ...podcastSchema, ...countrySchema]) {
     server.addSchema(schema);
   }
 
   server.register(userRoutes, { prefix: "api/user" });
   server.register(podcastRoutes, { prefix: "api/podcast" });
+  server.register(countryRoutes, { prefix: "api/country" });
 
   try {
     const envPort: number = process.env.PORT

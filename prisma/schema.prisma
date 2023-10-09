@@ -54,9 +54,9 @@ model Gender {
 }
 
 model Country {
-    id          Int    @id @default(autoincrement())
-    contry_name String
-    User        User[]
+    id           Int    @id @default(autoincrement())
+    country_name String
+    User         User[]
 }
 
 model Podcast_viewed_by_user {
