@@ -10,8 +10,8 @@ export async function registerUser(input: UserCreateInput) {
       password: hashPassword,
       username: input.username,
       birthday: input.birthday,
-      country: input.country,
-      gender: input.gender,
+      countryId: input.country,
+      genderId: input.gender,
     },
   });
 }
