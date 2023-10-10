@@ -6,11 +6,11 @@ const userCore = {
   email: z.string({
     required_error: "Email is required",
     invalid_type_error: "Email must be a string",
-  }).email({ message: "Invalid email address" }),
+  }).email("Invalid email address"),
   username: z.string({
     required_error: "Username is required",
     invalid_type_error: "Username must be a string",
-  }),
+  }).min(3),
 }
 
 const createUserSchema = z.object({
@@ -18,7 +18,7 @@ const createUserSchema = z.object({
   password: z.string({
     required_error: "Password is required",
     invalid_type_error: "Password must be a string",
-  }),
+  }).min(8),
   birthday: z.string({
     required_error: "Birthday is required",
     invalid_type_error: "Birthday must be a date",

@@ -6,6 +6,7 @@ import {
 import { DefaultAzureCredential } from "@azure/identity";
 
 const TWENTYFOUR_HOURS: any = 24 * 60 * 60 * 1000;
+const FIVE_MINUTES = 5 * 60 * 1000;
 
 export async function createSASTokenREAD(
   accountName: string,
@@ -39,7 +40,7 @@ export async function createSASTokenREAD(
   return sasToken;
 }
 
-export async function createSASTokenREADWRITE(
+export async function createSASTokenWRITE(
   accountName: string,
   blobClient: any,
   containerClient: any,
@@ -51,15 +52,15 @@ export async function createSASTokenREADWRITE(
   const sasOptions: any = {
     containerName: containerClient.containerName,
     blobName: blobName,
-    startsOn: new Date(new Date().valueOf() - TWENTYFOUR_HOURS),
-    expiresOn: new Date(new Date().valueOf() + TWENTYFOUR_HOURS),
-    permissions: BlobSASPermissions.parse("rw"),
+    startsOn: new Date(new Date().valueOf() - FIVE_MINUTES),
+    expiresOn: new Date(new Date().valueOf() + FIVE_MINUTES),
+    permissions: BlobSASPermissions.parse("w"),
   };
 
   const userDelegationKey = PRODUCTION
     ? await blobClient.getUserDelegationKey(
-      new Date(new Date().valueOf() - TWENTYFOUR_HOURS),
-      new Date(new Date().valueOf() + TWENTYFOUR_HOURS)
+      new Date(new Date().valueOf() - FIVE_MINUTES),
+      new Date(new Date().valueOf() + FIVE_MINUTES)
     )
     : null;
 
@@ -70,8 +71,6 @@ export async function createSASTokenREADWRITE(
   ).toString();
   return sasToken;
 }
-
-
 
 export async function azureAuth(accountName: string) {
   const PRODUCTION = process.env.NODE_ENV === "production";

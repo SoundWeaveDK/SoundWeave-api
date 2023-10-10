@@ -14,7 +14,7 @@ export async function registerUserHandler(
     const user = await registerUser(body);
     return reply.code(201).send(user);
   } catch (error) {
-    reply.code(400).send(error);
+    return reply.code(400).send(error);
   }
 }
 
@@ -24,9 +24,17 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
 
   if (!user) {
     return reply.code(401).send({
-      messages: "invalid email or password",
+      messages: "User doesn't exist",
     });
   }
+
+  if (body.password.length == 0) {
+    return reply.code(400).send({
+      messages: "Missing password",
+    });
+  }
+
+  console.log(user.password.length);
 
   const checkpassword = verifyPassword(body.password, user.password);
 
@@ -36,7 +44,7 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
   }
 
   return reply.code(401).send({
-    messages: "invalid email or password",
+    messages: "trist",
   });
 }
 
