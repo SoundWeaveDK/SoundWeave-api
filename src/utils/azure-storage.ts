@@ -1,5 +1,5 @@
-import { AccountSASPermissions, AccountSASResourceTypes, AccountSASServices, BlobServiceClient, SASProtocol, generateAccountSASQueryParameters } from "@azure/storage-blob";
-import { createSASTokenREAD, azureAuth } from "./azure-storage-helpers";
+import { BlobServiceClient } from "@azure/storage-blob";
+import { createSASTokenREAD, azureAuth, createSASTokenWRITE } from "./azure-storage-helpers";
 
 export const GetSingleImage = async (blobName: string): Promise<string> => {
   try {
@@ -173,7 +173,7 @@ export const GetMultiplePodcasts = async (blobNames: string[]): Promise<string[]
 }
 
 // Generate a SAS token for uploading blobs from the frontend
-export const UploadSASToken = async () => {
+export const GetUploadSASURL = async (containerName: string, blobName: string) => {
   try {
     const PRODUCTION: boolean = process.env.NODE_ENV === "production";
 
@@ -185,25 +185,18 @@ export const UploadSASToken = async () => {
       : `http://127.0.0.1:10000/${ACCOUNTNAME}`;
 
     const auth: any = await azureAuth(ACCOUNTNAME);
+    const blobClient = new BlobServiceClient(ACCOUNTURL, auth);
+    const containerClient = blobClient.getContainerClient(containerName);
 
-    const sasOptions = {
-      services: AccountSASServices.parse("b").toString(),          // blobs
-      resourceTypes: AccountSASResourceTypes.parse("sco").toString(), // service, container, object
-      permissions: AccountSASPermissions.parse("wu"),          // permissions: write, update
-      protocol: SASProtocol.HttpsAndHttp,
-      startsOn: new Date(),
-      expiresOn: new Date(new Date().valueOf() + (10 * 60 * 1000)),   // 10 minutes
-    };
-
-    const sasToken = generateAccountSASQueryParameters(
-      sasOptions,
+    const sasToken = await createSASTokenWRITE(
+      ACCOUNTNAME,
+      blobClient,
+      containerClient,
+      blobName,
       auth
-    ).toString();
+    );
 
-    console.log(`sasToken = '${sasToken}'\n`);
-
-    // return the full sas url
-    return `${ACCOUNTURL}/?${sasToken}`;
+    return ACCOUNTURL + "/" + containerName + "/" + blobName + "?" + sasToken;
 
   } catch (err: any) {
     throw new Error(err);
