@@ -52,6 +52,7 @@ const loginSchema = z.object({
 const loginResponseSchema = z.object({
   accessToken: z.string(),
   user: z.object({
+    id: z.number(),
     username: z.string(),
     email: z.string().email(),
     birthday: z.string(),
@@ -67,15 +68,42 @@ const loginResponseSchema = z.object({
   })
 });
 
+
+
+const updateUserRequestSchema = z.object({
+  userId: z.number(),
+  email: z.string().email("Invalid email address"),
+  username: z.string().min(3),
+  password: z.string().min(8),
+  birthday: z.string(),
+  countryId: z.number(),
+  genderId: z.number(),
+
+})
+
+
+const updateUserResponseSchema = z.object({
+  id: z.number(),
+  email: z.string().email("Invalid email address"),
+  username: z.string().min(3),
+  birthday: z.string(),
+  countryId: z.number(),
+  genderId: z.number(),
+})
+
+
 const models = {
   createUserSchema,
   createUserResponseSchema,
   loginSchema,
-  loginResponseSchema
+  loginResponseSchema,
+  updateUserRequestSchema,
+  updateUserResponseSchema
 }
 
 
 
 export type UserCreateInput = z.infer<typeof createUserSchema>
+export type UpdateUser = z.infer<typeof updateUserRequestSchema>
 export type LoginInput = z.infer<typeof loginSchema>
 export const { schemas: userSchema, $ref } = buildJsonSchemas(models, { $id: "userSchemas" })

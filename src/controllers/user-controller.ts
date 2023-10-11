@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { findUserByEmail, registerUser, findUsers } from "../services/user-service";
-import { LoginInput, UserCreateInput } from "../schemas/user-schema";
+import { findUserByEmail, registerUser, updateUser } from "../services/user-service";
+import { LoginInput, UserCreateInput, UpdateUser } from "../schemas/user-schema";
 import { verifyPassword } from "../utils/encryption";
 import { jwt } from "../plugins/fastify-jwt";
 
@@ -34,8 +34,6 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
     });
   }
 
-  console.log(user.password.length);
-
   const checkpassword = verifyPassword(body.password, user.password);
 
   if (checkpassword) {
@@ -44,12 +42,16 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
   }
 
   return reply.code(401).send({
-    messages: "trist",
+    messages: "Invalid user or password",
   });
 }
 
-
-export async function getUsershandler() {
-  const users = await findUsers();
-  return users;
+export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUser }>, reply: FastifyReply) {
+  const body = request.body;
+  try {
+    const user = await updateUser(body);
+    return reply.code(200).send(user)
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
 }
