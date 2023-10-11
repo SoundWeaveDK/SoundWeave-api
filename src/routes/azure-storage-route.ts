@@ -30,6 +30,29 @@ async function azureStorageRoutes(server: FastifyInstance) {
   );
 
   server.post(
+    "/getpodcast",
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            fileName: { type: "string" },
+          },
+        },
+      },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const body: any = request.body;
+      try {
+        const image = await GetSinglePodcast(body.fileName);
+        return reply.code(200).send(image);
+      } catch (err: any) {
+        return reply.code(404).send(err.message);
+      }
+    }
+  );
+
+  server.post(
     "/getuploadsastoken",
     {
       schema: {
