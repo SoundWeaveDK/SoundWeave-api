@@ -64,6 +64,10 @@ const loginResponseSchema = z.object({
     }),
     fk_gender_id: z.object({
       gender_name: z.string(),
+    }),
+    following: z.object({
+      id: z.number(),
+      username: z.string(),
     })
   })
 });

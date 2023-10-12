@@ -15,6 +15,8 @@ import genderRoutes from "./routes/gender-route";
 import { genderSchema } from "./schemas/gender-schema";
 import watchlaterRoutes from "./routes/watch-later-routes";
 import { watchlaterSchema } from "./schemas/watch-later-schema";
+import { followerSchema } from "./schemas/follower-schema";
+import folloerRoutes from "./routes/follower-routes";
 const server = Fastify({
   logger: true,
 });
@@ -27,7 +29,7 @@ const start = async () => {
   await server.register(fastifySwagger);
   await server.register(FastifyCors);
 
-  for (const schema of [...userSchema, ...podcastSchema, ...countrySchema, ...genderSchema, ...watchlaterSchema]) {
+  for (const schema of [...userSchema, ...podcastSchema, ...countrySchema, ...genderSchema, ...watchlaterSchema, ...followerSchema]) {
     server.addSchema(schema);
   }
 
@@ -37,6 +39,7 @@ const start = async () => {
   server.register(genderRoutes, { prefix: "api/gender" });
   server.register(azureStorageRoutes, { prefix: "api/azurestorage" });
   server.register(watchlaterRoutes, { prefix: "api/watchlater" });
+  server.register(folloerRoutes, { prefix: "api/followuser" })
 
   try {
     const envPort: number = process.env.PORT

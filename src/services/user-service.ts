@@ -54,7 +54,8 @@ export async function findUserByEmail(email: string) {
         select: {
           gender_name: true
         }
-      }
+      },
+      following: true
     },
 
   })
