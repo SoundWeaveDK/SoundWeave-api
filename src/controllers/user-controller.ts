@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { findUserByEmail, registerUser, updateUser } from "../services/user-service";
-import { LoginInput, UserCreateInput, UpdateUser } from "../schemas/user-schema";
+import { findUserByEmail, readSingleUser, registerUser, updateUser } from "../services/user-service";
+import { LoginInput, UserCreateInput, UpdateUser, ReadSingleUser } from "../schemas/user-schema";
 import { verifyPassword } from "../utils/encryption";
 import { jwt } from "../plugins/fastify-jwt";
 
@@ -50,6 +50,17 @@ export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUs
   const body = request.body;
   try {
     const user = await updateUser(body);
+    return reply.code(200).send(user)
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
+}
+
+
+export async function readSingleUserHandler(request: FastifyRequest<{ Params: ReadSingleUser }>, reply: FastifyReply) {
+  const param = request.params;
+  try {
+    const user = await readSingleUser(param)
     return reply.code(200).send(user)
   } catch (error) {
     return reply.code(400).send(error);

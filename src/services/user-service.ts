@@ -1,6 +1,6 @@
 import prisma from "../utils/orm-connection";
 import { passwordEncryption } from "../utils/encryption";
-import { UpdateUser, UserCreateInput } from "../schemas/user-schema";
+import { UpdateUser, UserCreateInput, ReadSingleUser } from "../schemas/user-schema";
 
 export async function registerUser(input: UserCreateInput) {
 
@@ -61,11 +61,6 @@ export async function findUserByEmail(email: string) {
 }
 
 export async function updateUser(input: UpdateUser) {
-
-  if (await emailExist(input.email)) {
-    throw new Error('Can\'t update email hence it\'s already in use');
-  }
-
   const hashPassword = passwordEncryption(input.password);
   return await prisma.user.update({
     where: {
@@ -78,6 +73,25 @@ export async function updateUser(input: UpdateUser) {
       birthday: input.birthday,
       countryId: input.countryId,
       genderId: input.genderId
+    }, include: {
+      fk_country_id: {
+        select: {
+          country_name: true,
+        }
+      },
+      fk_gender_id: {
+        select: {
+          gender_name: true
+        }
+      }
+    },
+  });
+}
+
+export async function readSingleUser(input: ReadSingleUser) {
+  return await prisma.user.findFirst({
+    where: {
+      id: input.userId
     }, include: {
       fk_country_id: {
         select: {

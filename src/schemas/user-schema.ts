@@ -84,12 +84,44 @@ const updateUserRequestSchema = z.object({
 
 const updateUserResponseSchema = z.object({
   id: z.number(),
-  email: z.string().email("Invalid email address"),
+  email: z.string(),
   username: z.string().min(3),
   birthday: z.string(),
   countryId: z.number(),
   genderId: z.number(),
+  fk_country_id: z.object({
+    country_name: z.string(),
+  }),
+  fk_gender_id: z.object({
+    gender_name: z.string(),
+  })
 })
+
+
+
+const readSingleUserRequestSchema = z.object({
+  userId: z.number({
+    required_error: "User id is required",
+    invalid_type_error: "User id must be a int",
+  }),
+});
+
+const readSingleUserResponseSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  username: z.string(),
+  birthday: z.string(),
+  countryId: z.number(),
+  genderId: z.number(),
+  fk_country_id: z.object({
+    country_name: z.string(),
+  }),
+  fk_gender_id: z.object({
+    gender_name: z.string(),
+  })
+})
+
+
 
 
 const models = {
@@ -98,7 +130,9 @@ const models = {
   loginSchema,
   loginResponseSchema,
   updateUserRequestSchema,
-  updateUserResponseSchema
+  updateUserResponseSchema,
+  readSingleUserRequestSchema,
+  readSingleUserResponseSchema,
 }
 
 
@@ -106,4 +140,5 @@ const models = {
 export type UserCreateInput = z.infer<typeof createUserSchema>
 export type UpdateUser = z.infer<typeof updateUserRequestSchema>
 export type LoginInput = z.infer<typeof loginSchema>
+export type ReadSingleUser = z.infer<typeof readSingleUserRequestSchema>
 export const { schemas: userSchema, $ref } = buildJsonSchemas(models, { $id: "userSchemas" })

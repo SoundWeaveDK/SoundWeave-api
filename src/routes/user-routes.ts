@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { loginHandler, registerUserHandler, updateUserHandler } from "../controllers/user-controller";
+import { loginHandler, readSingleUserHandler, registerUserHandler, updateUserHandler } from "../controllers/user-controller";
 import { $ref } from "../schemas/user-schema";
 
 async function userRoutes(server: FastifyInstance) {
@@ -41,6 +41,20 @@ async function userRoutes(server: FastifyInstance) {
       },
     },
     updateUserHandler
+  );
+
+  server.get(
+    "/read-single-user/:userId",
+    {
+      preHandler: [server.authenticate],
+      schema: {
+        params: $ref("readSingleUserRequestSchema"),
+        response: {
+          200: $ref("readSingleUserResponseSchema"),
+        },
+      },
+    },
+    readSingleUserHandler
   );
 
 
