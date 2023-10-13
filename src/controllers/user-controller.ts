@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { findUserByEmail, registerUser, findUsers } from "../services/user-service";
-import { LoginInput, UserCreateInput } from "../schemas/user-schema";
+import { findUserByEmail, readSingleUser, registerUser, updateUser } from "../services/user-service";
+import { LoginInput, UserCreateInput, UpdateUser, ReadSingleUser } from "../schemas/user-schema";
 import { verifyPassword } from "../utils/encryption";
 import { jwt } from "../plugins/fastify-jwt";
 
@@ -20,36 +20,52 @@ export async function registerUserHandler(
 
 export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>, reply: FastifyReply) {
   const body = request.body;
-  const user = await findUserByEmail(body.email);
+  try {
+    const user = await findUserByEmail(body.email);
 
-  if (!user) {
+    if (!user) {
+      return reply.code(401).send({
+        messages: "User doesn't exist",
+      });
+    }
+
+    if (body.password.length == 0) {
+      return reply.code(400).send({
+        messages: "Missing password",
+      });
+    }
+
+    const checkpassword = verifyPassword(body.password, user.password);
+
+    if (checkpassword) {
+      const accessToken = jwt.sign({ userId: user.id, expiresIn: '10d' });
+      return reply.code(200).send({ accessToken, user });
+    }
+  } catch (error) {
     return reply.code(401).send({
-      messages: "User doesn't exist",
+      messages: "Invalid user or password",
     });
   }
 
-  if (body.password.length == 0) {
-    return reply.code(400).send({
-      messages: "Missing password",
-    });
+}
+
+export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUser }>, reply: FastifyReply) {
+  const body = request.body;
+  try {
+    const user = await updateUser(body);
+    return reply.code(200).send(user)
+  } catch (error) {
+    return reply.code(400).send(error);
   }
-
-  console.log(user.password.length);
-
-  const checkpassword = verifyPassword(body.password, user.password);
-
-  if (checkpassword) {
-    const accessToken = jwt.sign({ userId: user.id, expiresIn: '10d' });
-    return reply.code(200).send({ accessToken, user });
-  }
-
-  return reply.code(401).send({
-    messages: "trist",
-  });
 }
 
 
-export async function getUsershandler() {
-  const users = await findUsers();
-  return users;
+export async function readSingleUserHandler(request: FastifyRequest<{ Params: ReadSingleUser }>, reply: FastifyReply) {
+  const param = request.params;
+  try {
+    const user = await readSingleUser(param)
+    return reply.code(200).send(user)
+  } catch (error) {
+    return reply.code(400).send(error);
+  }
 }
