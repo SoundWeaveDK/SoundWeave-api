@@ -47,6 +47,15 @@ services:
     networks:
       - soundweave-network
 
+  clamAV:
+    image: clamav/clamav:1.2
+    hostname: clamAV
+    restart: unless-stopped
+    ports:
+      - "3310:3310"
+    networks:
+      - soundweave-network
+
 networks:
   soundweave-network:
     driver: bridge

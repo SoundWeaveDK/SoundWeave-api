@@ -18,6 +18,9 @@ export async function findSinglePodcast(input: PodcastRequestSchema) {
     return await prisma.podcast.findUnique({
         where: {
             id: input.id
+        },
+        include: {
+            fk_user_id: true
         }
     });
 };
@@ -42,6 +45,9 @@ export async function getAllUsersFollowPodcasts(input: PodcastRequestSchema) {
             userId: {
                 in: followedUsersId
             }
+        },
+        include: {
+            fk_user_id: true
         }
     })
 }
@@ -52,9 +58,32 @@ export async function getAllUserPodcasts(input: PodcastRequestSchema) {
             userId: {
                 in: [Number(input.id)]
             }
+        },
+        include: {
+            fk_user_id: true
         }
     })
 }
+
+export async function getPreviewPodcasts() {
+    const randomPodcastIds: any = await prisma.$queryRaw`
+        SELECT id FROM Podcast
+        ORDER BY RAND()
+        LIMIT 15
+    `;
+
+    return await prisma.podcast.findMany({
+        where: {
+            id: {
+                in: randomPodcastIds.map((podcast: any) => podcast.id)
+            }
+        },
+        include: {
+            fk_user_id: true
+        }
+    })
+}
+
 
 
 export async function updatePodcast(input: UpdatePodcastRequestSchema, params: PodcastRequestSchema) {

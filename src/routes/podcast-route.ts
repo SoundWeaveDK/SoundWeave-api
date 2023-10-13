@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createPodcastHandler, deletePodcastHandler, readFollowingPodcastsHandler, readSinglePodcastHandler, readUserPodcastsHandler, updatePodcastHandler } from "../controllers/podcast-controller";
+import { createPodcastHandler, deletePodcastHandler, readFollowingPodcastsHandler, readPreviewPodcastsHandler, readSinglePodcastHandler, readUserPodcastsHandler, updatePodcastHandler } from "../controllers/podcast-controller";
 import { $ref } from "../schemas/podcast-schemas";
 
 async function podcastRoutes(server: FastifyInstance) {
@@ -57,6 +57,18 @@ async function podcastRoutes(server: FastifyInstance) {
             },
         },
         readUserPodcastsHandler
+    );
+
+    server.get(
+        "/read-preview-podcasts",
+        {
+            schema: {
+                response: {
+                    200: $ref("multiplePodcastResponseSchema"),
+                },
+            },
+        },
+        readPreviewPodcastsHandler
     );
 
     server.patch(
