@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, getPreviewPodcasts, updatePodcast } from "../services/podcast-service";
-import { PodcastCreateInput, PodcastResponseSchema, DeletePodcastSchema, PodcastUpdateInput } from "../schemas/podcast-schemas";
-import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts } from "../utils/azure-storage";
+import { PodcastResponseSchema, UpdatePodcastRequestSchema, PodcastRequestSchema, DeletePodcastRequestSchema, CreatePodcastRequestSchema } from "../schemas/podcast-schemas";
+import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts, DeleteBlob } from "../utils/azure-storage";
 
 
 export async function createPodcastHandler(request: FastifyRequest<{ Body: CreatePodcastRequestSchema }>, reply: FastifyReply) {
