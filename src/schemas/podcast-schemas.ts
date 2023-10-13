@@ -61,15 +61,12 @@ const multiplePodcastResponseSchema = z.array(podcastResponseSchema);
 
 
 // UPDATE
+// File and thumbnail should not be updated
 const updatePodcastRequestSchema = z.object({
-    id: z.number({
-        required_error: "Podcast id is required",
-        invalid_type_error: "Podcast name must be a number",
-    }),
     podcast_name: z.string().optional(),
-    podcast_file: z.string().optional(),
+    //podcast_file: z.string().optional(),
     description: z.string().optional(),
-    thumbnail: z.string().optional(),
+    //thumbnail: z.string().optional(),
 });
 
 const updatePodcastResponseSchema = z.object({
@@ -102,11 +99,11 @@ const models = {
     multiplePodcastResponseSchema
 };
 
-
-export type PodcastCreateInput = z.infer<typeof createPodcastRequestSchema>
-export type PodcastUpdateInput = z.infer<typeof updatePodcastRequestSchema>
+export type PodcastRequestSchema = z.infer<typeof podcastRequestSchema>
+export type CreatePodcastRequestSchema = z.infer<typeof createPodcastRequestSchema>
+export type UpdatePodcastRequestSchema = z.infer<typeof updatePodcastRequestSchema>
 export type PodcastResponseSchema = z.infer<typeof podcastResponseSchema>
-export type DeletePodcastSchema = z.infer<typeof deletePodcastRequestSchema>
+export type DeletePodcastRequestSchema = z.infer<typeof deletePodcastRequestSchema>
 
 export const { schemas: podcastSchema, $ref } = buildJsonSchemas(models, { $id: "podcastSchemas" })
 

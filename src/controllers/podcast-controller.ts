@@ -3,7 +3,8 @@ import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, ge
 import { PodcastCreateInput, PodcastResponseSchema, DeletePodcastSchema, PodcastUpdateInput } from "../schemas/podcast-schemas";
 import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts } from "../utils/azure-storage";
 
-export async function createPodcastHandler(request: FastifyRequest<{ Body: PodcastCreateInput }>, reply: FastifyReply) {
+
+export async function createPodcastHandler(request: FastifyRequest<{ Body: CreatePodcastRequestSchema }>, reply: FastifyReply) {
     const body = request.body;
     try {
         const podcast = await createPodcast(body);
@@ -123,8 +124,6 @@ export async function readUserPodcastsHandler(request: FastifyRequest<{ Params: 
     };
 };
 
-
-
 export async function readPreviewPodcastsHandler(request: FastifyRequest<{ Params: PodcastResponseSchema }>, reply: FastifyReply) {
     try {
         const podcasts: any = await getPreviewPodcasts();
@@ -158,11 +157,10 @@ export async function readPreviewPodcastsHandler(request: FastifyRequest<{ Param
     }
 };
 
-
-export async function updatePodcastHandler(request: FastifyRequest<{ Body: PodcastUpdateInput }>, reply: FastifyReply) {
+export async function updatePodcastHandler(request: FastifyRequest<{ Body: UpdatePodcastRequestSchema, Params: PodcastRequestSchema }>, reply: FastifyReply) {
     const body = request.body;
     try {
-        const podcast = await updatePodcast(body);
+        const podcast = await updatePodcast(body, request.params);
         return reply.code(201).send(podcast);
     } catch (error) {
         reply.code(400).send(error);
@@ -170,10 +168,14 @@ export async function updatePodcastHandler(request: FastifyRequest<{ Body: Podca
 
 }
 
-export async function deletePodcastHandler(request: FastifyRequest<{ Params: DeletePodcastSchema }>, reply: FastifyReply) {
+export async function deletePodcastHandler(request: FastifyRequest<{ Params: DeletePodcastRequestSchema }>, reply: FastifyReply) {
     const param = request.params;
     try {
         const podcast = await deletePodcast(param);
+        await Promise.all([
+            DeleteBlob("images", podcast.thumbnail),
+            DeleteBlob("podcasts", podcast.podcast_file)
+        ]);
         return reply.code(200).send();
     } catch (error) {
         reply.code(400).send(error);
