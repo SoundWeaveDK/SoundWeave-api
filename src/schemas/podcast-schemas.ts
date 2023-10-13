@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
 
-
 const podcastCore = {
     userId: z.number({
         required_error: "UserId id is required",
@@ -52,10 +51,12 @@ const podcastResponseSchema = z.object({
     id: z.number(),
     ...podcastCore,
     ...podcastStatistics,
+    fk_user_id: z.object({
+        username: z.string(),
+    }),
 });
 
 const multiplePodcastResponseSchema = z.array(podcastResponseSchema);
-
 // READ END
 
 
