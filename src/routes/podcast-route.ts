@@ -62,7 +62,6 @@ async function podcastRoutes(server: FastifyInstance) {
     server.get(
         "/read-preview-podcasts",
         {
-            preHandler: [server.authenticate],
             schema: {
                 response: {
                     200: $ref("multiplePodcastResponseSchema"),
