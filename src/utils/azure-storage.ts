@@ -201,4 +201,41 @@ export const GetUploadSASURL = async (containerName: string, blobName: string) =
   } catch (err: any) {
     throw new Error(err);
   }
+
 };
+
+export const DeleteBlob = async (containerName: string, blobName: string) => {
+  try {
+    const PRODUCTION: boolean = process.env.NODE_ENV === "production";
+
+    // devstoreaccount1 is the default account name created for Azurite emulator.
+    const ACCOUNTNAME = PRODUCTION ? "soundweavestorage" : "devstoreaccount1";
+    // The service endpoints for Azurite are different from the endpoints of an Azure Storage account. The local computer doesn't do domain name resolution, requiring Azurite endpoints to be local addresses.
+    const ACCOUNTURL = PRODUCTION
+      ? `https://${ACCOUNTNAME}.blob.core.windows.net`
+      : `http://127.0.0.1:10000/${ACCOUNTNAME}`;
+
+    const auth: any = await azureAuth(ACCOUNTNAME);
+
+    const blobClient = new BlobServiceClient(ACCOUNTURL, auth);
+
+    const containerClient = blobClient.getContainerClient(containerName);
+
+    const blob = containerClient.getBlockBlobClient(blobName);
+
+    const exists = await blob.exists();
+
+    if (!exists) {
+      throw new Error("Blob does not exist");
+    }
+
+    await blob.delete();
+
+    return true;
+
+  }
+  catch (err: any) {
+    throw new Error(err);
+  }
+};
+
