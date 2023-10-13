@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createPodcastHandler, deletePodcastHandler, readFollowingPodcastsHandler, readSinglePodcastHandler, readUserPodcastsHandler, updatePodcastHandler } from "../controllers/podcast-controller";
+import { createPodcastHandler, deletePodcastHandler, readFollowingPodcastsHandler, readPreviewPodcastsHandler, readSinglePodcastHandler, readUserPodcastsHandler, updatePodcastHandler } from "../controllers/podcast-controller";
 import { $ref } from "../schemas/podcast-schemas";
 
 async function podcastRoutes(server: FastifyInstance) {
@@ -59,11 +59,25 @@ async function podcastRoutes(server: FastifyInstance) {
         readUserPodcastsHandler
     );
 
-    server.patch(
-        "/update-podcast",
+    server.get(
+        "/read-preview-podcasts",
         {
             preHandler: [server.authenticate],
             schema: {
+                response: {
+                    200: $ref("multiplePodcastResponseSchema"),
+                },
+            },
+        },
+        readPreviewPodcastsHandler
+    );
+
+    server.patch(
+        "/update-podcast/:id",
+        {
+            preHandler: [server.authenticate],
+            schema: {
+                params: $ref("podcastRequestSchema"),
                 body: $ref("updatePodcastRequestSchema"),
                 response: {
                     200: $ref("updatePodcastResponseSchema"),

@@ -1,9 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, updatePodcast } from "../services/podcast-service";
-import { PodcastCreateInput, PodcastResponseSchema, DeletePodcastSchema, PodcastUpdateInput } from "../schemas/podcast-schemas";
-import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts } from "../utils/azure-storage";
+import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, getPreviewPodcasts, updatePodcast } from "../services/podcast-service";
+import { PodcastResponseSchema, UpdatePodcastRequestSchema, PodcastRequestSchema, DeletePodcastRequestSchema, CreatePodcastRequestSchema } from "../schemas/podcast-schemas";
+import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts, DeleteBlob } from "../utils/azure-storage";
 
-export async function createPodcastHandler(request: FastifyRequest<{ Body: PodcastCreateInput }>, reply: FastifyReply) {
+
+export async function createPodcastHandler(request: FastifyRequest<{ Body: CreatePodcastRequestSchema }>, reply: FastifyReply) {
     const body = request.body;
     try {
         const podcast = await createPodcast(body);
@@ -123,12 +124,43 @@ export async function readUserPodcastsHandler(request: FastifyRequest<{ Params: 
     };
 };
 
+export async function readPreviewPodcastsHandler(request: FastifyRequest<{ Params: PodcastResponseSchema }>, reply: FastifyReply) {
+    try {
+        const podcasts: any = await getPreviewPodcasts();
+        if (podcasts == null) {
+            return reply.code(404).send({
+                messages: "Podcasts not found"
+            });
+        }
+        const thumbnails = podcasts.map((podcast: any) => {
+            return podcast.thumbnail
+        })
 
+        try {
+            const [thumbnail_URLS] = await Promise.all([
+                GetMultipleImages(thumbnails),
+            ]);
 
-export async function updatePodcastHandler(request: FastifyRequest<{ Body: PodcastUpdateInput }>, reply: FastifyReply) {
+            podcasts.forEach((podcast: any, index: any) => {
+                podcast.thumbnail = thumbnail_URLS[index];
+            })
+        }
+        catch (err) {
+            return reply.code(404).send({
+                messages: "Thumbnail or podcast file not found"
+            });
+        }
+
+        return reply.code(200).send(podcasts);
+    } catch (error) {
+        reply.code(400).send(error);
+    }
+};
+
+export async function updatePodcastHandler(request: FastifyRequest<{ Body: UpdatePodcastRequestSchema, Params: PodcastRequestSchema }>, reply: FastifyReply) {
     const body = request.body;
     try {
-        const podcast = await updatePodcast(body);
+        const podcast = await updatePodcast(body, request.params);
         return reply.code(201).send(podcast);
     } catch (error) {
         reply.code(400).send(error);
@@ -136,10 +168,14 @@ export async function updatePodcastHandler(request: FastifyRequest<{ Body: Podca
 
 }
 
-export async function deletePodcastHandler(request: FastifyRequest<{ Params: DeletePodcastSchema }>, reply: FastifyReply) {
+export async function deletePodcastHandler(request: FastifyRequest<{ Params: DeletePodcastRequestSchema }>, reply: FastifyReply) {
     const param = request.params;
     try {
         const podcast = await deletePodcast(param);
+        await Promise.all([
+            DeleteBlob("images", podcast.thumbnail),
+            DeleteBlob("podcasts", podcast.podcast_file)
+        ]);
         return reply.code(200).send();
     } catch (error) {
         reply.code(400).send(error);
