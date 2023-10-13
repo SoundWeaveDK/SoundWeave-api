@@ -60,10 +60,11 @@ async function podcastRoutes(server: FastifyInstance) {
     );
 
     server.patch(
-        "/update-podcast",
+        "/update-podcast/:id",
         {
             preHandler: [server.authenticate],
             schema: {
+                params: $ref("podcastRequestSchema"),
                 body: $ref("updatePodcastRequestSchema"),
                 response: {
                     200: $ref("updatePodcastResponseSchema"),
