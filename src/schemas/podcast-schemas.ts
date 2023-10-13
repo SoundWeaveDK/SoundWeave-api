@@ -20,9 +20,7 @@ const podcastCore = {
         required_error: "Thumbnail is required",
         invalid_type_error: "Thumbnail must be a string",
     })
-
 }
-
 
 const podcastStatistics = {
     views: z.bigint().optional(),
@@ -30,20 +28,19 @@ const podcastStatistics = {
     money: z.number().optional(),
 }
 
-
-//Schemas for request and response on create a podcast
+// CREATE
 const createPodcastRequestSchema = z.object({
     ...podcastCore
 });
 
 const createPodcastResponseSchema = z.object({
     id: z.number(),
-    podcast_name: z.string(),
-    podcast_file: z.string(),
+    ...podcastCore,
+    ...podcastStatistics,
 });
+// CREATE END
 
-
-//Schemas for request and respones on get a single podcast
+// READ
 const podcastRequestSchema = z.object({
     id: z.number({
         required_error: "Podcast id is required",
@@ -59,19 +56,28 @@ const podcastResponseSchema = z.object({
 
 const multiplePodcastResponseSchema = z.array(podcastResponseSchema);
 
+// READ END
 
-//Schemas for request and respones on update a podcast
+
+// UPDATE
+// File and thumbnail should not be updated
 const updatePodcastRequestSchema = z.object({
-    ...podcastCore,
+    podcast_name: z.string().optional(),
+    //podcast_file: z.string().optional(),
+    description: z.string().optional(),
+    //thumbnail: z.string().optional(),
 });
 
 const updatePodcastResponseSchema = z.object({
     id: z.number(),
     ...podcastCore,
+    ...podcastStatistics,
 });
 
+// UPDATE END
 
-//Schemas for request and respones on deleting a podcast
+
+// DELETE
 const deletePodcastRequestSchema = z.object({
     id: z.number({
         required_error: "Podcast id is required",
@@ -79,7 +85,7 @@ const deletePodcastRequestSchema = z.object({
     }),
 });
 
-
+// DELETE END
 
 const models = {
     createPodcastRequestSchema,
@@ -92,10 +98,11 @@ const models = {
     multiplePodcastResponseSchema
 };
 
-
-export type PodcastCreateInput = z.infer<typeof createPodcastRequestSchema>
-export type podcastSchema = z.infer<typeof podcastResponseSchema>
-export type deletePodcastSchema = z.infer<typeof deletePodcastRequestSchema>
+export type PodcastRequestSchema = z.infer<typeof podcastRequestSchema>
+export type CreatePodcastRequestSchema = z.infer<typeof createPodcastRequestSchema>
+export type UpdatePodcastRequestSchema = z.infer<typeof updatePodcastRequestSchema>
+export type PodcastResponseSchema = z.infer<typeof podcastResponseSchema>
+export type DeletePodcastRequestSchema = z.infer<typeof deletePodcastRequestSchema>
 
 export const { schemas: podcastSchema, $ref } = buildJsonSchemas(models, { $id: "podcastSchemas" })
 

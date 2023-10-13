@@ -1,7 +1,7 @@
 import prisma from "../utils/orm-connection";
-import { PodcastCreateInput, podcastSchema, deletePodcastSchema } from "../schemas/podcast-schemas";
+import { CreatePodcastRequestSchema, PodcastResponseSchema, DeletePodcastRequestSchema, UpdatePodcastRequestSchema, PodcastRequestSchema } from "../schemas/podcast-schemas";
 
-export async function createPodcast(input: PodcastCreateInput) {
+export async function createPodcast(input: CreatePodcastRequestSchema) {
     return await prisma.podcast.create({
         data: {
             userId: input.userId,
@@ -14,26 +14,15 @@ export async function createPodcast(input: PodcastCreateInput) {
 }
 
 
-export async function findSinglePodcast(input: podcastSchema) {
+export async function findSinglePodcast(input: PodcastRequestSchema) {
     return await prisma.podcast.findUnique({
         where: {
             id: input.id
-        },
-        // include: {
-        //     fk_user_id: true,
-        //     Podcast_liked_by_user: true,
-        //     Podcast_viewed_by_user: true,
-        //     Comment: {
-        //         include: {
-        //             fk_user_id: true,
-        //             Comments_liked: true
-        //         }
-        //     }
-        // }
+        }
     });
 };
 
-export async function getAllUsersFollowPodcasts(input: podcastSchema) {
+export async function getAllUsersFollowPodcasts(input: PodcastRequestSchema) {
     const followedUsers = await prisma.user.findMany({
         where: {
             followedBy: {
@@ -57,20 +46,33 @@ export async function getAllUsersFollowPodcasts(input: podcastSchema) {
     })
 }
 
+export async function getAllUserPodcasts(input: PodcastRequestSchema) {
+    return await prisma.podcast.findMany({
+        where: {
+            userId: {
+                in: [Number(input.id)]
+            }
+        }
+    })
+}
 
-export async function updatePodcast(input: PodcastCreateInput) {
+
+export async function updatePodcast(input: UpdatePodcastRequestSchema, params: PodcastRequestSchema) {
     return await prisma.podcast.update({
         where: {
-            id: input.userId,
+            id: params.id
         },
         data: {
             podcast_name: input.podcast_name,
-            podcast_file: input.podcast_file,
-        },
+            //podcast_file: input.podcast_file,
+            description: input.description,
+            //thumbnail: input.thumbnail
+        }
     });
+
 }
 
-export async function deletePodcast(input: deletePodcastSchema) {
+export async function deletePodcast(input: DeletePodcastRequestSchema) {
     return await prisma.podcast.delete({
         where: {
             id: input.id,

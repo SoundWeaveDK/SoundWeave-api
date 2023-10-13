@@ -1,7 +1,7 @@
 import Fastify, { FastifyRequest, FastifyReply } from "fastify";
 import dotenv from "dotenv";
 import { userSchema } from "./schemas/user-schema";
-import azureStorageRoutes from "./routes/azure-storage-routes-test";
+import azureStorageRoutes from "./routes/azure-storage-route";
 import { podcastSchema } from "./schemas/podcast-schemas";
 import userRoutes from "./routes/user-routes";
 import fastifyJwt from "./plugins/fastify-jwt";

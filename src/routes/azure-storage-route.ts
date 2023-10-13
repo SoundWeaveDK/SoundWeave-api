@@ -21,7 +21,7 @@ async function azureStorageRoutes(server: FastifyInstance) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       const body: any = request.body;
       try {
-        const image = await GetSingleImage(body.filename);
+        const image = await GetSingleImage(body.fileName);
         return reply.code(200).send(image);
       } catch (err: any) {
         return reply.code(404).send(err.message);
@@ -44,8 +44,8 @@ async function azureStorageRoutes(server: FastifyInstance) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       const body: any = request.body;
       try {
-        const podcast = await GetSinglePodcast(body.filename);
-        return reply.code(200).send(podcast);
+        const image = await GetSinglePodcast(body.fileName);
+        return reply.code(200).send(image);
       } catch (err: any) {
         return reply.code(404).send(err.message);
       }
