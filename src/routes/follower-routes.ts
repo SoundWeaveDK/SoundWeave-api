@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { userFollowHandler, userUnFollowHandler } from "../controllers/follower-controller";
+import { readSingleUserFollowerHandler, userFollowHandler, userUnFollowHandler } from "../controllers/follower-controller";
 import { $ref } from "../schemas/follower-schema";
 
 
@@ -32,6 +32,21 @@ async function followRoutes(server: FastifyInstance) {
 
         },
         userUnFollowHandler
+    );
+
+    server.get(
+        "/read-users-followers/:userId",
+        {
+            preHandler: [server.authenticate],
+            schema: {
+                params: $ref("readUsersfollowerRequestSchema"),
+                response: {
+                    201: $ref("readUsersfollowerResponseSchema"),
+                },
+            },
+
+        },
+        readSingleUserFollowerHandler
     );
 
 }
