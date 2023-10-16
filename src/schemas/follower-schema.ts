@@ -13,14 +13,30 @@ const followResponseSchema = z.object({
     }),
 })
 
+const readUsersfollowerRequestSchema = z.object({
+    userId: z.number(),
+})
+
+
+const readUsersfollowerResponseSchema = z.object({
+    following: z.array(
+        z.object({
+            id: z.number(),
+            username: z.string(),
+        })
+    )
+})
 
 const models = {
     followerRequestSchema,
     followResponseSchema,
+    readUsersfollowerRequestSchema,
+    readUsersfollowerResponseSchema
 }
 
 
 
 export type FollowerSchema = z.infer<typeof followerRequestSchema>
+export type ReadUserFollowerSchema = z.infer<typeof readUsersfollowerRequestSchema>
 
 export const { schemas: followerSchema, $ref } = buildJsonSchemas(models, { $id: "followerSchemas" })

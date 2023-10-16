@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, getPreviewPodcasts, updatePodcast } from "../services/podcast-service";
+import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, getExplorePodcasts, getPreviewPodcasts, updatePodcast } from "../services/podcast-service";
 import { PodcastResponseSchema, UpdatePodcastRequestSchema, PodcastRequestSchema, DeletePodcastRequestSchema, CreatePodcastRequestSchema } from "../schemas/podcast-schemas";
 import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts, DeleteBlob } from "../utils/azure-storage";
 
@@ -8,6 +8,20 @@ export async function createPodcastHandler(request: FastifyRequest<{ Body: Creat
     const body = request.body;
     try {
         const podcast = await createPodcast(body);
+        try {
+            const [thumbnailUrl, podcastFileUrl] = await Promise.all([
+                GetSingleImage(podcast.thumbnail),
+                GetSinglePodcast(podcast.podcast_file)
+            ]);
+
+            podcast.thumbnail = thumbnailUrl;
+            podcast.podcast_file = podcastFileUrl;
+        }
+        catch (err) {
+            return reply.code(404).send({
+                messages: "Thumbnail or podcast file not found"
+            });
+        }
         return reply.code(201).send(podcast);
     } catch (error) {
         reply.code(400).send(error);
@@ -143,6 +157,43 @@ export async function readPreviewPodcastsHandler(request: FastifyRequest<{ Param
 
             podcasts.forEach((podcast: any, index: any) => {
                 podcast.thumbnail = thumbnail_URLS[index];
+            })
+        }
+        catch (err) {
+            return reply.code(404).send({
+                messages: "Thumbnail or podcast file not found"
+            });
+        }
+
+        return reply.code(200).send(podcasts);
+    } catch (error) {
+        reply.code(400).send(error);
+    }
+};
+
+export async function readExplorePodcastsHandler(request: FastifyRequest<{ Params: PodcastResponseSchema }>, reply: FastifyReply) {
+    try {
+        const podcasts: any = await getExplorePodcasts();
+        if (podcasts == null) {
+            return reply.code(404).send({
+                messages: "Podcasts not found"
+            });
+        }
+        const thumbnails = podcasts.map((podcast: any) => {
+            return podcast.thumbnail
+        })
+        const podcast_files = podcasts.map((podcast: any) => {
+            return podcast.podcast_file
+        })
+        try {
+            const [thumbnail_URLS, podcast_file_URLS] = await Promise.all([
+                GetMultipleImages(thumbnails),
+                GetMultiplePodcasts(podcast_files)
+            ]);
+
+            podcasts.forEach((podcast: any, index: any) => {
+                podcast.thumbnail = thumbnail_URLS[index];
+                podcast.podcast_file = podcast_file_URLS[index];
             })
         }
         catch (err) {

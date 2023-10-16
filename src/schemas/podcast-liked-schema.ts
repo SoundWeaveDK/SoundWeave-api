@@ -5,20 +5,40 @@ const podcastLikedReqestSchema = z.object({
     userId: z.number({
         required_error: "User id is required",
         invalid_type_error: "User id must be a int",
-    }).min(1)
+    }).min(1),
 })
 
-
-const podcastLikedResponseSchema = z.object({
-    fk_podcast_id: z.object({
-        podcast_name: z.string(),
+const podcastLikedResponseSchema = z.array(
+    z.object({
+        fk_podcast_id: z.object({
+            podcast_name: z.string(),
+        })
     })
+)
+
+const addPodcastLikedRequestSchema = z.object({
+    userId: z.number(),
+    podcastId: z.number(),
 })
+
+const addPodcastLikedResponesSchema = z.object({})
+
+
+const deletePodcastLikedRequest = z.object({
+    id: z.number(),
+})
+
+
 
 const models = {
     podcastLikedReqestSchema,
-    podcastLikedResponseSchema
+    podcastLikedResponseSchema,
+    addPodcastLikedRequestSchema,
+    addPodcastLikedResponesSchema,
+    deletePodcastLikedRequest
 }
 
 export type PodcastLiked = z.infer<typeof podcastLikedReqestSchema>
+export type AddPodcastLiked = z.infer<typeof addPodcastLikedRequestSchema>
+export type DeletePodcastLiked = z.infer<typeof deletePodcastLikedRequest>
 export const { schemas: podcastLikedSchema, $ref } = buildJsonSchemas(models, { $id: "podcastLikeSchemas" })
