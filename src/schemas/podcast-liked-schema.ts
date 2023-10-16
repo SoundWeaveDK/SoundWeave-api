@@ -8,17 +8,32 @@ const podcastLikedReqestSchema = z.object({
     }).min(1)
 })
 
-
-const podcastLikedResponseSchema = z.object({
-    fk_podcast_id: z.object({
-        podcast_name: z.string(),
+const podcastLikedResponseSchema = z.array(
+    z.object({
+        fk_podcast_id: z.object({
+            podcast_name: z.string(),
+        })
     })
+)
+
+const addPodcastLikedRequestSchema = z.object({
+    userId: z.number(),
+    podcastId: z.number(),
 })
+
+const addPodcastLikedResponesSchema = z.object({
+
+})
+
+
 
 const models = {
     podcastLikedReqestSchema,
-    podcastLikedResponseSchema
+    podcastLikedResponseSchema,
+    addPodcastLikedRequestSchema,
+    addPodcastLikedResponesSchema
 }
 
 export type PodcastLiked = z.infer<typeof podcastLikedReqestSchema>
+export type AddPodcastLiked = z.infer<typeof addPodcastLikedRequestSchema>
 export const { schemas: podcastLikedSchema, $ref } = buildJsonSchemas(models, { $id: "podcastLikeSchemas" })
