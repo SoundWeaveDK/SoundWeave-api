@@ -84,6 +84,25 @@ export async function getPreviewPodcasts() {
     })
 }
 
+export async function getExplorePodcasts() {
+    const randomPodcastIds: any = await prisma.$queryRaw`
+        SELECT id FROM Podcast
+        ORDER BY RAND()
+        LIMIT 15
+    `;
+
+    return await prisma.podcast.findMany({
+        where: {
+            id: {
+                in: randomPodcastIds.map((podcast: any) => podcast.id)
+            }
+        },
+        include: {
+            fk_user_id: true
+        }
+    })
+}
+
 
 
 export async function updatePodcast(input: UpdatePodcastRequestSchema, params: PodcastRequestSchema) {
