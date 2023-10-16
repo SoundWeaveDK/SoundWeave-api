@@ -8,6 +8,20 @@ export async function createPodcastHandler(request: FastifyRequest<{ Body: Creat
     const body = request.body;
     try {
         const podcast = await createPodcast(body);
+        try {
+            const [thumbnailUrl, podcastFileUrl] = await Promise.all([
+                GetSingleImage(podcast.thumbnail),
+                GetSinglePodcast(podcast.podcast_file)
+            ]);
+
+            podcast.thumbnail = thumbnailUrl;
+            podcast.podcast_file = podcastFileUrl;
+        }
+        catch (err) {
+            return reply.code(404).send({
+                messages: "Thumbnail or podcast file not found"
+            });
+        }
         return reply.code(201).send(podcast);
     } catch (error) {
         reply.code(400).send(error);
