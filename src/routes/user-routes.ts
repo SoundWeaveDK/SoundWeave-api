@@ -29,7 +29,7 @@ async function userRoutes(server: FastifyInstance) {
     loginHandler
   );
 
-  server.patch(
+  server.put(
     "/update-user",
     {
       preHandler: [server.authenticate],

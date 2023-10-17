@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, getExplorePodcasts, getPreviewPodcasts, updatePodcast } from "../services/podcast-service";
 import { PodcastResponseSchema, UpdatePodcastRequestSchema, PodcastRequestSchema, DeletePodcastRequestSchema, CreatePodcastRequestSchema } from "../schemas/podcast-schemas";
 import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts, DeleteBlob } from "../utils/azure-storage";
+import { AzureBlob } from "../interfaces/azure-blob";
 
 
 export async function createPodcastHandler(request: FastifyRequest<{ Body: CreatePodcastRequestSchema }>, reply: FastifyReply) {
@@ -77,12 +78,12 @@ export async function readFollowingPodcastsHandler(request: FastifyRequest<{ Par
             const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
 
             const thumbnailToBlobMap = new Map();
-            thumbnailBlobs.forEach((blob: any) => {
+            thumbnailBlobs.forEach((blob: AzureBlob) => {
                 thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 
             const podcastFileToBlobMap = new Map();
-            podcastFileBlobs.forEach((blob: any) => {
+            podcastFileBlobs.forEach((blob: AzureBlob) => {
                 podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 
@@ -126,12 +127,12 @@ export async function readUserPodcastsHandler(request: FastifyRequest<{ Params: 
             const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
 
             const thumbnailToBlobMap = new Map();
-            thumbnailBlobs.forEach((blob: any) => {
+            thumbnailBlobs.forEach((blob: AzureBlob) => {
                 thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 
             const podcastFileToBlobMap = new Map();
-            podcastFileBlobs.forEach((blob: any) => {
+            podcastFileBlobs.forEach((blob: AzureBlob) => {
                 podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 
@@ -171,7 +172,7 @@ export async function readPreviewPodcastsHandler(request: FastifyRequest<{ Param
             const blobs = await GetMultipleImages(thumbnails);
 
             const thumbnailToBlobMap = new Map();
-            blobs.forEach((blob: any) => {
+            blobs.forEach((blob: AzureBlob) => {
                 thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 
@@ -210,12 +211,12 @@ export async function readExplorePodcastsHandler(request: FastifyRequest<{ Param
             const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
 
             const thumbnailToBlobMap = new Map();
-            thumbnailBlobs.forEach((blob: any) => {
+            thumbnailBlobs.forEach((blob: AzureBlob) => {
                 thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 
             const podcastFileToBlobMap = new Map();
-            podcastFileBlobs.forEach((blob: any) => {
+            podcastFileBlobs.forEach((blob: AzureBlob) => {
                 podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
             });
 

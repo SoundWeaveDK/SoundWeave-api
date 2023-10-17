@@ -17,7 +17,7 @@ export async function registerUser(input: UserCreateInput) {
       username: input.username,
       birthday: input.birthday,
       countryId: input.countryId,
-      genderId: input.genderId,
+      genderId: input.genderId
     },
   });
 }
@@ -72,7 +72,8 @@ export async function updateUser(input: UpdateUser) {
       password: hashPassword,
       birthday: input.birthday,
       countryId: input.countryId,
-      genderId: input.genderId
+      genderId: input.genderId,
+      profile_picture: input.profilePicture
     }, include: {
       fk_country_id: {
         select: {

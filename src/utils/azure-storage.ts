@@ -1,6 +1,7 @@
 import { BlobServiceClient } from "@azure/storage-blob";
 import { createSASTokenREAD, azureAuth, createSASTokenWRITE } from "./azure-storage-helpers";
 import { AzureBlob } from "../interfaces/azure-blob";
+import { Watchlater } from "../schemas/watch-later-schema";
 
 export const GetSingleImage = async (blobName: string): Promise<string> => {
   try {
@@ -245,5 +246,39 @@ export const DeleteBlob = async (containerName: string, blobName: string) => {
   catch (err: any) {
     throw new Error(err);
   }
+};
+
+export const AddSasUrlToBlobs = async (objects: object[]): Promise<object[]> => {
+
+  const thumbnails = objects.map((object: any) => object.fk_podcast_id.thumbnail)
+  const podcast_files = objects.map((object: any) => object.fk_podcast_id.podcast_file)
+
+  try {
+    const thumbnailBlobs = await GetMultipleImages(thumbnails);
+    const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
+
+    const thumbnailToBlobMap = new Map();
+    thumbnailBlobs.forEach((blob: AzureBlob) => {
+      thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
+    });
+
+    const podcastFileToBlobMap = new Map();
+    podcastFileBlobs.forEach((blob: AzureBlob) => {
+      podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
+    });
+
+    objects.forEach((object: any) => {
+      if (thumbnailToBlobMap.has(object.fk_podcast_id.thumbnail)) {
+        object.fk_podcast_id.thumbnail = thumbnailToBlobMap.get(object.fk_podcast_id.thumbnail);
+      }
+      if (podcastFileToBlobMap.has(object.fk_podcast_id.podcast_file)) {
+        object.fk_podcast_id.podcast_file = podcastFileToBlobMap.get(object.fk_podcast_id.podcast_file);
+      }
+    });
+  }
+  catch (err: any) {
+    throw new Error(err);
+  }
+  return objects;
 };
 
