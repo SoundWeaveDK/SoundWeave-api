@@ -17,6 +17,7 @@ model User {
     password               String
     birthday               String
     createdAt              DateTime                 @default(now())
+    profile_picture        String?
     followedBy             User[]                   @relation("Userfollows")
     following              User[]                   @relation("Userfollows")
     fk_gender_id           Gender                   @relation(fields: [genderId], references: [id])

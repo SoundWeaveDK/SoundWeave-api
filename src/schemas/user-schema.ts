@@ -11,6 +11,7 @@ const userCore = {
     required_error: "Username is required",
     invalid_type_error: "Username must be a string",
   }).min(3),
+  profilePicture: z.string().optional(),
 }
 
 const createUserSchema = z.object({
@@ -30,7 +31,8 @@ const createUserSchema = z.object({
   genderId: z.number({
     required_error: "Gender is required",
     invalid_type_error: "Gender must be a string",
-  })
+  }),
+  profilePicture: z.string().optional(),
 });
 
 const createUserResponseSchema = z.object({
@@ -59,6 +61,7 @@ const loginResponseSchema = z.object({
     countryId: z.string(),
     genderId: z.string(),
     createdAt: z.date(),
+    profile_picture: z.string().optional(),
     fk_country_id: z.object({
       country_name: z.string(),
     }),
@@ -78,6 +81,7 @@ const updateUserRequestSchema = z.object({
   birthday: z.string(),
   countryId: z.number(),
   genderId: z.number(),
+  profilePicture: z.string().optional(),
 
 })
 
@@ -89,6 +93,7 @@ const updateUserResponseSchema = z.object({
   birthday: z.string(),
   countryId: z.number(),
   genderId: z.number(),
+  profile_picture: z.string(),
   fk_country_id: z.object({
     country_name: z.string(),
   }),
@@ -113,6 +118,7 @@ const readSingleUserResponseSchema = z.object({
   birthday: z.string(),
   countryId: z.number(),
   genderId: z.number(),
+  profile_picture: z.string(),
   fk_country_id: z.object({
     country_name: z.string(),
   }),

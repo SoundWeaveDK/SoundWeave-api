@@ -1,13 +1,15 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { readUsersPodcastViewed, addPodcastToViewed, deleteSinglePodcastFromViewed, deleteAllPodcastFromViewed } from "../services/podcast-viewed-service";
 import { PodcastViewed, AddPodcastViewed, DeletePodcastViewed, DeleteAllPodcastViewed } from "../schemas/podcast-viewed-schema";
+import { AddSasUrlToBlobs } from "../utils/azure-storage";
 
 
 export async function readUsersPodcastViewedHandler(request: FastifyRequest<{ Params: PodcastViewed }>, reply: FastifyReply) {
     const param = request.params;
     try {
-        const podcastLiked = await readUsersPodcastViewed(param)
-        return reply.code(200).send(podcastLiked)
+        const podcastViewed = await readUsersPodcastViewed(param)
+
+        return reply.code(200).send(await AddSasUrlToBlobs(podcastViewed))
     } catch (error) {
         return reply.code(400).send(error);
     }

@@ -3,6 +3,7 @@ import { findUserByEmail, readSingleUser, registerUser, updateUser } from "../se
 import { LoginInput, UserCreateInput, UpdateUser, ReadSingleUser } from "../schemas/user-schema";
 import { verifyPassword } from "../utils/encryption";
 import { jwt } from "../plugins/fastify-jwt";
+import { GetSingleImage } from "../utils/azure-storage";
 
 
 export async function registerUserHandler(
@@ -53,6 +54,11 @@ export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUs
   const body = request.body;
   try {
     const user = await updateUser(body);
+
+    if (user?.profile_picture != null) {
+      const profile_picture = await GetSingleImage(user.profile_picture)
+      user.profile_picture = profile_picture
+    }
     return reply.code(200).send(user)
   } catch (error) {
     return reply.code(400).send(error);
@@ -64,6 +70,17 @@ export async function readSingleUserHandler(request: FastifyRequest<{ Params: Re
   const param = request.params;
   try {
     const user = await readSingleUser(param)
+    try {
+      if (user?.profile_picture != null) {
+        const profile_picture = await GetSingleImage(user.profile_picture)
+        user.profile_picture = profile_picture
+      }
+    }
+    catch (err) {
+      return reply.code(404).send({
+        messages: "Thumbnail or podcast file not found"
+      });
+    }
     return reply.code(200).send(user)
   } catch (error) {
     return reply.code(400).send(error);

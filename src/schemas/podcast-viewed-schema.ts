@@ -8,15 +8,6 @@ const podcastViewedReqestSchema = z.object({
     }).min(1),
 })
 
-const podcastViewedResponseSchema = z.array(
-    z.object({
-        fk_podcast_id: z.object({
-            id: z.number(),
-            podcast_name: z.string(),
-        })
-    })
-)
-
 const addPodcastViewedRequestSchema = z.object({
     userId: z.number(),
     podcastId: z.number(),
@@ -34,7 +25,6 @@ const deleteAllPodcastViewedRequest = z.object({
 
 const models = {
     podcastViewedReqestSchema,
-    podcastViewedResponseSchema,
     addPodcastViewedRequestSchema,
     addPodcastViewedResponesSchema,
     deletePodcastViewedRequest,
