@@ -23,6 +23,8 @@ import { podcastViewedSchema } from "./schemas/podcast-viewed-schema"
 import podcastViewedRoutes from "./routes/podcast-viewed-route";
 import { commentSchema } from "./schemas/comment-schema";
 import readPodcastCommentsRoutes from "./routes/comment-route";
+import { commentLikeSchema } from "./schemas/comment-like-schema";
+import commentLikeRoutes from "./routes/comment-like-routes";
 const server = Fastify({
   logger: true,
 });
@@ -44,7 +46,8 @@ const start = async () => {
     ...followerSchema,
     ...podcastLikedSchema,
     ...podcastViewedSchema,
-    ...commentSchema
+    ...commentSchema,
+    ...commentLikeSchema
   ]) {
     server.addSchema(schema);
   }
@@ -59,6 +62,7 @@ const start = async () => {
   server.register(podcastLikedRoutes, { prefix: "api/podcastliked" });
   server.register(podcastViewedRoutes, { prefix: "api/podcastviewed" });
   server.register(readPodcastCommentsRoutes, { prefix: "api/podcastcomments" });
+  server.register(commentLikeRoutes, { prefix: "api/commentlike" });
 
   try {
     const envPort: number = process.env.PORT
