@@ -1,5 +1,6 @@
 import { BlobServiceClient } from "@azure/storage-blob";
 import { createSASTokenREAD, azureAuth, createSASTokenWRITE } from "./azure-storage-helpers";
+import { AzureBlob } from "../interfaces/azure-blob";
 
 export const GetSingleImage = async (blobName: string): Promise<string> => {
   try {
@@ -40,7 +41,7 @@ export const GetSingleImage = async (blobName: string): Promise<string> => {
   }
 };
 
-export const GetMultipleImages = async (blobNames: string[]): Promise<string[]> => {
+export const GetMultipleImages = async (blobNames: string[]): Promise<AzureBlob[]> => {
   try {
     const PRODUCTION: boolean = process.env.NODE_ENV === "production";
 
@@ -56,7 +57,7 @@ export const GetMultipleImages = async (blobNames: string[]): Promise<string[]> 
     const blobClient = new BlobServiceClient(ACCOUNTURL, auth);
     const containerClient = blobClient.getContainerClient(container);
 
-    const blobSasUris: string[] = [];
+    const blobs: AzureBlob[] = [];
 
     await Promise.all(blobNames.map(async (blobName) => {
       const sasToken = await createSASTokenREAD(
@@ -76,10 +77,14 @@ export const GetMultipleImages = async (blobNames: string[]): Promise<string[]> 
       }
 
       const blobSasUri = `${blob}?${sasToken}`;
-      blobSasUris.push(blobSasUri);
-    }));
+      blobs.push({
+        blobName: blobName,
+        blobSasUri: blobSasUri
+      });
+    }
+    ));
 
-    return blobSasUris;
+    return blobs;
 
   } catch (err: any) {
     throw new Error("Error in retrieving image from Azure Storage");
@@ -124,7 +129,7 @@ export const GetSinglePodcast = async (blobName: string): Promise<string> => {
   }
 };
 
-export const GetMultiplePodcasts = async (blobNames: string[]): Promise<string[]> => {
+export const GetMultiplePodcasts = async (blobNames: string[]): Promise<AzureBlob[]> => {
   try {
     const PRODUCTION: boolean = process.env.NODE_ENV === "production";
 
@@ -141,7 +146,7 @@ export const GetMultiplePodcasts = async (blobNames: string[]): Promise<string[]
     const blobClient = new BlobServiceClient(ACCOUNTURL, auth);
     const containerClient = blobClient.getContainerClient(container);
 
-    const blobSasUris: string[] = [];
+    const blobs: AzureBlob[] = [];
 
     await Promise.all(blobNames.map(async (blobName) => {
       const sasToken = await createSASTokenREAD(
@@ -161,11 +166,14 @@ export const GetMultiplePodcasts = async (blobNames: string[]): Promise<string[]
       }
 
       const blobSasUri = `${blob}?${sasToken}`;
-      blobSasUris.push(blobSasUri);
-    }));
+      blobs.push({
+        blobName: blobName,
+        blobSasUri: blobSasUri
+      });
+    }
+    ));
 
-    return blobSasUris;
-
+    return blobs;
   }
   catch (err: any) {
     throw new Error(err);
