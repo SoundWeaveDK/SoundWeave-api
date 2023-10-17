@@ -10,9 +10,6 @@ async function podcastLikedRoutes(server: FastifyInstance) {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("podcastLikedReqestSchema"),
-                response: {
-                    200: $ref("podcastLikedResponseSchema"),
-                },
             },
 
         },
