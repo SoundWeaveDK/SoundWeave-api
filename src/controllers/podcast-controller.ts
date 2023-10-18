@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { createPodcast, deletePodcast, findSinglePodcast, getAllUserPodcasts, getAllUsersFollowPodcasts, getExplorePodcasts, getPreviewPodcasts, updatePodcast } from "../services/podcast-service";
 import { PodcastResponseSchema, UpdatePodcastRequestSchema, PodcastRequestSchema, DeletePodcastRequestSchema, CreatePodcastRequestSchema } from "../schemas/podcast-schemas";
 import { GetSingleImage, GetSinglePodcast, GetMultipleImages, GetMultiplePodcasts, DeleteBlob } from "../utils/azure-storage";
+import { AzureBlob } from "../interfaces/azure-blob";
 
 
 export async function createPodcastHandler(request: FastifyRequest<{ Body: CreatePodcastRequestSchema }>, reply: FastifyReply) {
@@ -69,22 +70,31 @@ export async function readFollowingPodcastsHandler(request: FastifyRequest<{ Par
                 messages: "Podcasts not found"
             });
         }
-        const thumbnails = podcasts.map((podcast) => {
-            return podcast.thumbnail
-        })
-        const podcast_files = podcasts.map((podcast) => {
-            return podcast.podcast_file
-        })
-        try {
-            const [thumbnail_URLS, podcast_file_URLS] = await Promise.all([
-                GetMultipleImages(thumbnails),
-                GetMultiplePodcasts(podcast_files)
-            ]);
+        const thumbnails = podcasts.map((podcast: any) => podcast.thumbnail)
+        const podcast_files = podcasts.map((podcast: any) => podcast.podcast_file)
 
-            podcasts.forEach((podcast, index) => {
-                podcast.thumbnail = thumbnail_URLS[index];
-                podcast.podcast_file = podcast_file_URLS[index];
-            })
+        try {
+            const thumbnailBlobs = await GetMultipleImages(thumbnails);
+            const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
+
+            const thumbnailToBlobMap = new Map();
+            thumbnailBlobs.forEach((blob: AzureBlob) => {
+                thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            const podcastFileToBlobMap = new Map();
+            podcastFileBlobs.forEach((blob: AzureBlob) => {
+                podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            podcasts.forEach((podcast: any) => {
+                if (thumbnailToBlobMap.has(podcast.thumbnail)) {
+                    podcast.thumbnail = thumbnailToBlobMap.get(podcast.thumbnail);
+                }
+                if (podcastFileToBlobMap.has(podcast.podcast_file)) {
+                    podcast.podcast_file = podcastFileToBlobMap.get(podcast.podcast_file);
+                }
+            });
         }
         catch (err) {
             return reply.code(404).send({
@@ -108,22 +118,32 @@ export async function readUserPodcastsHandler(request: FastifyRequest<{ Params: 
                 messages: "Podcasts not found"
             });
         }
-        const thumbnails = podcasts.map((podcast) => {
-            return podcast.thumbnail
-        })
-        const podcast_files = podcasts.map((podcast) => {
-            return podcast.podcast_file
-        })
-        try {
-            const [thumbnail_URLS, podcast_file_URLS] = await Promise.all([
-                GetMultipleImages(thumbnails),
-                GetMultiplePodcasts(podcast_files)
-            ]);
 
-            podcasts.forEach((podcast, index) => {
-                podcast.thumbnail = thumbnail_URLS[index];
-                podcast.podcast_file = podcast_file_URLS[index];
-            })
+        const thumbnails = podcasts.map((podcast: any) => podcast.thumbnail)
+        const podcast_files = podcasts.map((podcast: any) => podcast.podcast_file)
+
+        try {
+            const thumbnailBlobs = await GetMultipleImages(thumbnails);
+            const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
+
+            const thumbnailToBlobMap = new Map();
+            thumbnailBlobs.forEach((blob: AzureBlob) => {
+                thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            const podcastFileToBlobMap = new Map();
+            podcastFileBlobs.forEach((blob: AzureBlob) => {
+                podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            podcasts.forEach((podcast: any) => {
+                if (thumbnailToBlobMap.has(podcast.thumbnail)) {
+                    podcast.thumbnail = thumbnailToBlobMap.get(podcast.thumbnail);
+                }
+                if (podcastFileToBlobMap.has(podcast.podcast_file)) {
+                    podcast.podcast_file = podcastFileToBlobMap.get(podcast.podcast_file);
+                }
+            });
         }
         catch (err) {
             return reply.code(404).send({
@@ -146,18 +166,21 @@ export async function readPreviewPodcastsHandler(request: FastifyRequest<{ Param
                 messages: "Podcasts not found"
             });
         }
-        const thumbnails = podcasts.map((podcast: any) => {
-            return podcast.thumbnail
-        })
+        const thumbnails = podcasts.map((podcast: any) => podcast.thumbnail)
 
         try {
-            const [thumbnail_URLS] = await Promise.all([
-                GetMultipleImages(thumbnails),
-            ]);
+            const blobs = await GetMultipleImages(thumbnails);
 
-            podcasts.forEach((podcast: any, index: any) => {
-                podcast.thumbnail = thumbnail_URLS[index];
-            })
+            const thumbnailToBlobMap = new Map();
+            blobs.forEach((blob: AzureBlob) => {
+                thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            podcasts.forEach((podcast: any) => {
+                if (thumbnailToBlobMap.has(podcast.thumbnail)) {
+                    podcast.thumbnail = thumbnailToBlobMap.get(podcast.thumbnail);
+                }
+            });
         }
         catch (err) {
             return reply.code(404).send({
@@ -179,22 +202,32 @@ export async function readExplorePodcastsHandler(request: FastifyRequest<{ Param
                 messages: "Podcasts not found"
             });
         }
-        const thumbnails = podcasts.map((podcast: any) => {
-            return podcast.thumbnail
-        })
-        const podcast_files = podcasts.map((podcast: any) => {
-            return podcast.podcast_file
-        })
-        try {
-            const [thumbnail_URLS, podcast_file_URLS] = await Promise.all([
-                GetMultipleImages(thumbnails),
-                GetMultiplePodcasts(podcast_files)
-            ]);
 
-            podcasts.forEach((podcast: any, index: any) => {
-                podcast.thumbnail = thumbnail_URLS[index];
-                podcast.podcast_file = podcast_file_URLS[index];
-            })
+        const thumbnails = podcasts.map((podcast: any) => podcast.thumbnail)
+        const podcast_files = podcasts.map((podcast: any) => podcast.podcast_file)
+
+        try {
+            const thumbnailBlobs = await GetMultipleImages(thumbnails);
+            const podcastFileBlobs = await GetMultiplePodcasts(podcast_files);
+
+            const thumbnailToBlobMap = new Map();
+            thumbnailBlobs.forEach((blob: AzureBlob) => {
+                thumbnailToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            const podcastFileToBlobMap = new Map();
+            podcastFileBlobs.forEach((blob: AzureBlob) => {
+                podcastFileToBlobMap.set(blob.blobName, blob.blobSasUri);
+            });
+
+            podcasts.forEach((podcast: any) => {
+                if (thumbnailToBlobMap.has(podcast.thumbnail)) {
+                    podcast.thumbnail = thumbnailToBlobMap.get(podcast.thumbnail);
+                }
+                if (podcastFileToBlobMap.has(podcast.podcast_file)) {
+                    podcast.podcast_file = podcastFileToBlobMap.get(podcast.podcast_file);
+                }
+            });
         }
         catch (err) {
             return reply.code(404).send({

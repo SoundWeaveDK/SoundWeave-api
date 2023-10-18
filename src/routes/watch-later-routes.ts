@@ -9,9 +9,6 @@ async function watchlaterRoutes(server: FastifyInstance) {
             preHandler: [server.authenticate],
             schema: {
                 params: $ref("watchlaterRequestSchema"),
-                response: {
-                    201: $ref("watchlaterResponseSchema"),
-                },
             },
 
         },

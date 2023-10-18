@@ -7,9 +7,16 @@ export async function readUsersWatchLater(input: Watchlater) {
             userId: Number(input.userId)
         },
         include: {
-            fk_podcast_id: true
+            fk_podcast_id: {
+                include: {
+                    fk_user_id: {
+                        select: {
+                            username: true
+                        }
+                    }
+                }
+            },
         }
-
     })
 }
 
@@ -19,6 +26,17 @@ export async function addPodcastToWatchLater(input: AddWatchlater) {
         data: {
             podcastId: input.podcastId,
             userId: input.userId
+        },
+        include: {
+            fk_podcast_id: {
+                include: {
+                    fk_user_id: {
+                        select: {
+                            username: true
+                        }
+                    }
+                }
+            }
         }
     })
 }

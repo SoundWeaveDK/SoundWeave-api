@@ -19,6 +19,7 @@ const podcastCore = {
         required_error: "Thumbnail is required",
         invalid_type_error: "Thumbnail must be a string",
     }),
+    createdAt: z.string().optional(),
 }
 
 const podcastStatistics = {
@@ -35,8 +36,7 @@ const createPodcastRequestSchema = z.object({
 const createPodcastResponseSchema = z.object({
     id: z.number(),
     ...podcastCore,
-    ...podcastStatistics,
-    createdAt: z.string()
+    ...podcastStatistics
 });
 // CREATE END
 

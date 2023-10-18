@@ -17,7 +17,7 @@ export async function registerUser(input: UserCreateInput) {
       username: input.username,
       birthday: input.birthday,
       countryId: input.countryId,
-      genderId: input.genderId,
+      genderId: input.genderId
     },
   });
 }
@@ -61,7 +61,10 @@ export async function findUserByEmail(email: string) {
 }
 
 export async function updateUser(input: UpdateUser) {
-  const hashPassword = passwordEncryption(input.password);
+  var hashPassword = null;
+  if (input.password != null) {
+    hashPassword = passwordEncryption(input.password);
+  }
   return await prisma.user.update({
     where: {
       id: input.userId
@@ -69,10 +72,11 @@ export async function updateUser(input: UpdateUser) {
     data: {
       email: input.email,
       username: input.username,
-      password: hashPassword,
+      password: hashPassword != null ? hashPassword : input.password,
       birthday: input.birthday,
       countryId: input.countryId,
-      genderId: input.genderId
+      genderId: input.genderId,
+      profile_picture: input.profilePicture
     }, include: {
       fk_country_id: {
         select: {
