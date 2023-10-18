@@ -24,6 +24,11 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginInput }>
   try {
     const user = await findUserByEmail(body.email);
 
+    if (user?.profile_picture != null) {
+      const profile_picture = await GetSingleImage(user.profile_picture)
+      user.profile_picture = profile_picture
+    }
+
     if (!user) {
       return reply.code(401).send({
         messages: "User doesn't exist",

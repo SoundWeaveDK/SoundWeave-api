@@ -77,10 +77,10 @@ const updateUserRequestSchema = z.object({
   userId: z.number(),
   email: z.string().email("Invalid email address"),
   username: z.string().min(3),
-  password: z.string().min(8),
+  password: z.string().min(8).optional(),
   birthday: z.string(),
-  countryId: z.number(),
-  genderId: z.number(),
+  countryId: z.number().optional(),
+  genderId: z.number().optional(),
   profilePicture: z.string().optional(),
 
 })
