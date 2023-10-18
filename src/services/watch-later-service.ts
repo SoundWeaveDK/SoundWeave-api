@@ -26,6 +26,17 @@ export async function addPodcastToWatchLater(input: AddWatchlater) {
         data: {
             podcastId: input.podcastId,
             userId: input.userId
+        },
+        include: {
+            fk_podcast_id: {
+                include: {
+                    fk_user_id: {
+                        select: {
+                            username: true
+                        }
+                    }
+                }
+            }
         }
     })
 }
