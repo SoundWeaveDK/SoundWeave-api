@@ -15,7 +15,7 @@ model User {
     username               String
     email                  String                   @unique
     password               String
-    birthday               String
+    birthday               DateTime
     createdAt              DateTime                 @default(now())
     profile_picture        String?
     followedBy             User[]                   @relation("Userfollows")

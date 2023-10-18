@@ -11,6 +11,11 @@ export async function readUsersComment(input: ReadPodcastComments) {
                 select: {
                     Comments_liked: true
                 }
+            },
+            fk_user_id: {
+                select: {
+                    username: true
+                }
             }
         }
     })

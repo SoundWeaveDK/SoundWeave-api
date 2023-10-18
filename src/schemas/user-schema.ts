@@ -115,7 +115,7 @@ const readSingleUserResponseSchema = z.object({
   id: z.number(),
   email: z.string(),
   username: z.string(),
-  birthday: z.string(),
+  birthday: z.date(),
   countryId: z.number(),
   genderId: z.number(),
   profile_picture: z.string(),

@@ -8,19 +8,6 @@ const watchlaterRequestSchema = z.object({
     }).min(1)
 })
 
-const watchlaterResponseSchema = z.object({
-    fk_podcast_id: z.object({
-        podcast_name: z.string(),
-        views: z.number(),
-        likes: z.number(),
-        money: z.number(),
-        description: z.string(),
-        podcast_file: z.string(),
-        thumbnail: z.string(),
-    })
-})
-
-
 const addWatchLaterRequestSchema = z.object({
     userId: z.number({
         required_error: "User id is required",
@@ -48,7 +35,6 @@ const deleteAllWatchLaterRequestSchema = z.object({
 
 const models = {
     watchlaterRequestSchema,
-    watchlaterResponseSchema,
     addWatchLaterRequestSchema,
     addWatchLaterResponseSchema,
     deleteSingleWatchLaterRequestSchema,
