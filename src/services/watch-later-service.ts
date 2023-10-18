@@ -7,7 +7,12 @@ export async function readUsersWatchLater(input: Watchlater) {
             userId: Number(input.userId)
         },
         include: {
-            fk_podcast_id: true
+            fk_podcast_id: true,
+            fk_user_id: {
+                select: {
+                    username: true
+                }
+            }
         }
 
     })
