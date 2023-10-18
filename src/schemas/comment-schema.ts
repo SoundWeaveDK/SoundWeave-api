@@ -10,6 +10,7 @@ const readPodcastCommnetResponseSchema = z.array(
     z.object({
         comment: z.string(),
         id: z.number(),
+        userId: z.number(),
         fk_user_id: z.object({
             username: z.string(),
         }),
