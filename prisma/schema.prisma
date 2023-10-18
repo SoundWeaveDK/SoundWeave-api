@@ -15,7 +15,7 @@ model User {
     username               String
     email                  String                   @unique
     password               String
-    birthday               DateTime
+    birthday               String
     createdAt              DateTime                 @default(now())
     profile_picture        String?
     followedBy             User[]                   @relation("Userfollows")
@@ -64,33 +64,33 @@ model Country {
 
 model Podcast_viewed_by_user {
     id            Int     @id @default(autoincrement())
-    fk_user_id    User    @relation(fields: [userId], references: [id])
+    fk_user_id    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        Int
-    fk_podcast_id Podcast @relation(fields: [podcastId], references: [id])
+    fk_podcast_id Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
     podcastId     Int
 }
 
 model Podcast_liked_by_user {
     id            Int     @id @default(autoincrement())
-    fk_user_id    User    @relation(fields: [userId], references: [id])
+    fk_user_id    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        Int
-    fk_podcast_id Podcast @relation(fields: [podcastId], references: [id])
+    fk_podcast_id Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
     podcastId     Int
 }
 
 model Comment {
     id             Int              @id @default(autoincrement())
     comment        String
-    fk_podcast_id  Podcast          @relation(fields: [podcastId], references: [id])
+    fk_podcast_id  Podcast          @relation(fields: [podcastId], references: [id], onDelete: Cascade)
     podcastId      Int
-    fk_user_id     User             @relation(fields: [userId], references: [id])
+    fk_user_id     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId         Int
     Comments_liked Comments_liked[]
 }
 
 model Comments_liked {
     id            Int     @id @default(autoincrement())
-    fk_user_id    User    @relation(fields: [userId], references: [id])
+    fk_user_id    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        Int
     fk_comment_id Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
     commentId     Int
@@ -98,8 +98,8 @@ model Comments_liked {
 
 model Watch_later {
     id            Int     @id @default(autoincrement())
-    fk_user_id    User    @relation(fields: [userId], references: [id])
+    fk_user_id    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        Int
-    fk_podcast_id Podcast @relation(fields: [podcastId], references: [id])
+    fk_podcast_id Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
     podcastId     Int
 }
