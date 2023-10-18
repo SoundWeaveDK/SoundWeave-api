@@ -27,6 +27,12 @@ export async function addPodcastComments(input: AddPodcastComments) {
             comment: input.comment,
             podcastId: input.podcastId,
             userId: input.userId
+        }, include: {
+            fk_user_id: {
+                select: {
+                    username: true
+                }
+            }
         }
     })
 }

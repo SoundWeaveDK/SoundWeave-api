@@ -32,7 +32,10 @@ const addPodcastCommentResponseSchema = z.object({
     id: z.number(),
     comment: z.string(),
     userId: z.number(),
-    podcastId: z.number()
+    podcastId: z.number(),
+    fk_user_id: z.object({
+        username: z.string(),
+    })
 })
 
 const deletePodcastCommentResponseSchema = z.object({
