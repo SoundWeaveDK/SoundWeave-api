@@ -10,6 +10,7 @@ const readPodcastAnalyticsResponse = z.array(
     z.object({
         fk_podcast_id: z.object({
             views: z.number(),
+            likes: z.number()
         }),
         fk_user_id: z.object({
             fk_country_id: z.object({
