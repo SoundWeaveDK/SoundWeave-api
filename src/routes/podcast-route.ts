@@ -20,9 +20,10 @@ async function podcastRoutes(server: FastifyInstance) {
     );
 
     server.get(
-        "/read-single-podcast/:id",
+        "/read-single-podcast/podcastId/:id/userId/:userId",
         {
             preHandler: [server.authenticate],
+            onResponse: [server.analytics],
             schema: {
                 params: $ref("podcastRequestSchema"),
                 response: {

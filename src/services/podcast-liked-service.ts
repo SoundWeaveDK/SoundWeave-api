@@ -15,7 +15,19 @@ export async function readUsersPodcastLiked(input: PodcastLiked) {
 
 
 export async function addPodcastToliked(input: AddPodcastLiked) {
-    return prisma.podcast_liked_by_user.create({
+    await prisma.podcast.update({
+        where: {
+            id: input.podcastId
+        }, data: {
+            likes: {
+                increment: 1
+            }
+        }
+    })
+
+
+
+    return await prisma.podcast_liked_by_user.create({
         data: {
             userId: input.userId,
             podcastId: input.podcastId
@@ -25,7 +37,18 @@ export async function addPodcastToliked(input: AddPodcastLiked) {
 
 
 export async function deleteSinglePodcastFromLiked(input: DeletePodcastLiked) {
-    return prisma.podcast_liked_by_user.delete({
+    await prisma.podcast.update({
+        where: {
+            id: input.id
+        }, data: {
+            likes: {
+                decrement: 1
+            }
+        }
+    })
+
+
+    return await prisma.podcast_liked_by_user.delete({
         where: {
             id: input.id
         }

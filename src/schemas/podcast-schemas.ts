@@ -44,7 +44,11 @@ const createPodcastResponseSchema = z.object({
 const podcastRequestSchema = z.object({
     id: z.number({
         required_error: "Podcast id is required",
-        invalid_type_error: "Podcast name must be a number",
+        invalid_type_error: "Podcast id must be a number",
+    }),
+    userId: z.number({
+        required_error: "User id is required",
+        invalid_type_error: "User id must be a number",
     }),
 });
 
