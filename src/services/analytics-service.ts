@@ -3,12 +3,22 @@ import { AddAnalytics, ReadPodcastAnalytics } from "../schemas/analytics-schema"
 
 
 export async function addAnalytics(input: AddAnalytics) {
-    return prisma.analytics.create({
-        data: {
+
+    const doesEntryExist = await prisma.analytics.findFirst({
+        where: {
             userId: input.userId,
-            podcastId: input.id
+            podcastId: input.podcastId
         }
     })
+
+    if (!doesEntryExist) {
+        return await prisma.analytics.create({
+            data: {
+                userId: input.userId,
+                podcastId: input.podcastId
+            }
+        })
+    }
 }
 
 export async function readPodcastAnalytics(input: ReadPodcastAnalytics) {

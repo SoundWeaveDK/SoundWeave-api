@@ -17,8 +17,7 @@ export async function createPodcast(input: CreatePodcastRequestSchema) {
 export async function findSinglePodcast(input: PodcastRequestSchema) {
     return await prisma.podcast.findUnique({
         where: {
-            id: input.id,
-            userId: input.userId
+            id: input.id
         },
         include: {
             fk_user_id: true

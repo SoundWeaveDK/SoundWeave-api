@@ -39,7 +39,7 @@ model Podcast {
     views                  Int                      @default(0)
     likes                  Int                      @default(0)
     money                  Float                    @default(0)
-    description            String?
+    description            String?                  @db.LongText
     podcast_file           String
     thumbnail              String
     Watch_later            Watch_later[]
@@ -82,7 +82,7 @@ model Podcast_liked_by_user {
 
 model Comment {
     id             Int              @id @default(autoincrement())
-    comment        String
+    comment        String           @db.LongText
     fk_podcast_id  Podcast          @relation(fields: [podcastId], references: [id], onDelete: Cascade)
     podcastId      Int
     fk_user_id     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
