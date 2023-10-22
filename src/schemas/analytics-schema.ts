@@ -8,6 +8,7 @@ const readPodcastAnalyticsRequest = z.object({
 
 const readPodcastAnalyticsResponse = z.array(
     z.object({
+        createdAt: z.string(),
         fk_podcast_id: z.object({
             views: z.number(),
             likes: z.number()
@@ -26,7 +27,7 @@ const readPodcastAnalyticsResponse = z.array(
 
 const addAnalytics = z.object({
     userId: z.number(),
-    id: z.number()
+    podcastId: z.number()
 })
 
 

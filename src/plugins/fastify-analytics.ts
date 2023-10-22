@@ -14,10 +14,10 @@ declare module "fastify" {
 export default fp(async function (fastify: FastifyInstance, opts: FastifyPluginOptions) {
     fastify.decorate(
         "analytics",
-        function (request: FastifyRequest<{ Params: AddAnalytics }>, reply: FastifyReply) {
+        function (request: FastifyRequest<{ Body: AddAnalytics }>, reply: FastifyReply) {
             try {
-                const paramsPodcast = request.params;
-                addAnalytics(paramsPodcast);
+                const bodyPodcast = request.body;
+                addAnalytics(bodyPodcast);
             } catch (err) {
                 reply.send(err);
             }

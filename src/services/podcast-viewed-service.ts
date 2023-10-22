@@ -25,7 +25,7 @@ export async function readUsersPodcastViewed(input: PodcastViewed) {
 export async function addPodcastToViewed(input: AddPodcastViewed) {
     await prisma.podcast.update({
         where: {
-            id: input.podcastId
+            id: input.podcastId,
         },
         data: {
             views: {

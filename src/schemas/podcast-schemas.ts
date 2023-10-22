@@ -46,10 +46,6 @@ const podcastRequestSchema = z.object({
         required_error: "Podcast id is required",
         invalid_type_error: "Podcast id must be a number",
     }),
-    userId: z.number({
-        required_error: "User id is required",
-        invalid_type_error: "User id must be a number",
-    }),
 });
 
 const podcastResponseSchema = z.object({
