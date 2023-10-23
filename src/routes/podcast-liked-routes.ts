@@ -33,7 +33,7 @@ async function podcastLikedRoutes(server: FastifyInstance) {
 
 
     server.delete(
-        "/delete-single-liked-podcast/:id",
+        "/delete-single-liked-podcast/id/:id/podcastId/:podcastId",
         {
             preHandler: [server.authenticate],
             schema: {
