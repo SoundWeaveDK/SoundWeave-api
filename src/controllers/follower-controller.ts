@@ -1,6 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { followAUser, unfollowAUser, readUsersfollowers } from "../services/follower-service";
 import { FollowerSchema, ReadUserFollowerSchema } from "../schemas/follower-schema";
+import { AddSasUrlToBlobs, GetMultipleImages, GetSingleImage } from "../utils/azure-storage";
+import { AzureBlob } from "../interfaces/azure-blob";
 
 
 export async function userFollowHandler(request: FastifyRequest<{ Body: FollowerSchema }>, reply: FastifyReply) {
@@ -29,7 +31,38 @@ export async function readSingleUserFollowerHandler(request: FastifyRequest<{ Pa
     const param = request.params;
     try {
         const readUserFollowers = await readUsersfollowers(param)
-        return reply.code(200).send(readUserFollowers)
+        if (readUserFollowers == null) {
+            return reply.code(404).send({
+                messages: "Users not found"
+            });
+        }
+
+        const profile_pictures = readUserFollowers.filter(user => user.profile_picture != null).map((user: any) => user.profile_picture)
+        const following_profile_pictures = readUserFollowers.filter(user => user.following.filter(user => user.profile_picture != null));
+        try {
+            if (profile_pictures.length != 0) {
+                const profilePictureBlobs = await GetMultipleImages(profile_pictures);
+
+                const profilePictureToBlobMap = new Map();
+                profilePictureBlobs.forEach((blob: AzureBlob) => {
+                    profilePictureToBlobMap.set(blob.blobName, blob.blobSasUri);
+                });
+
+                readUserFollowers.forEach((user: any) => {
+                    if (profilePictureToBlobMap.has(user.profile_picture)) {
+                        user.profile_picture = profilePictureToBlobMap.get(user.profile_picture);
+                    }
+                });
+            }
+
+        }
+        catch (err) {
+            return reply.code(404).send({
+                messages: "Profile picture not found for 1 or more users"
+            });
+        }
+
+        return reply.code(200).send(readUserFollowers);
     } catch (error) {
         return reply.code(400).send(error);
     }
