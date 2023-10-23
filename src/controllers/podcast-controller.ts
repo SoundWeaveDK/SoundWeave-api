@@ -43,8 +43,12 @@ export async function readSinglePodcastHandler(request: FastifyRequest<{ Params:
         try {
             const [thumbnailUrl, podcastFileUrl] = await Promise.all([
                 GetSingleImage(podcast.thumbnail),
-                GetSinglePodcast(podcast.podcast_file)
+                GetSinglePodcast(podcast.podcast_file),
             ]);
+
+            if (podcast.fk_user_id.profile_picture != null) {
+                podcast.fk_user_id.profile_picture = await GetSingleImage(podcast.fk_user_id.profile_picture);
+            }
 
             podcast.thumbnail = thumbnailUrl;
             podcast.podcast_file = podcastFileUrl;

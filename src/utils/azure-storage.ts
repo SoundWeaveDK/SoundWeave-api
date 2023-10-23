@@ -1,7 +1,6 @@
 import { BlobServiceClient } from "@azure/storage-blob";
 import { createSASTokenREAD, azureAuth, createSASTokenWRITE } from "./azure-storage-helpers";
 import { AzureBlob } from "../interfaces/azure-blob";
-import { Watchlater } from "../schemas/watch-later-schema";
 
 export const GetSingleImage = async (blobName: string): Promise<string> => {
   try {

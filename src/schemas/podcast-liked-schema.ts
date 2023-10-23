@@ -18,6 +18,7 @@ const addPodcastLikedResponesSchema = z.object({})
 
 const deletePodcastLikedRequest = z.object({
     id: z.number(),
+    podcastId: z.number()
 })
 
 

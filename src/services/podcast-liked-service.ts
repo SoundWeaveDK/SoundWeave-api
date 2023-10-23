@@ -39,7 +39,7 @@ export async function addPodcastToliked(input: AddPodcastLiked) {
 export async function deleteSinglePodcastFromLiked(input: DeletePodcastLiked) {
     await prisma.podcast.update({
         where: {
-            id: input.id
+            id: input.podcastId
         }, data: {
             likes: {
                 decrement: 1
