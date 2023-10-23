@@ -37,8 +37,12 @@ export async function readSingleUserFollowerHandler(request: FastifyRequest<{ Pa
             });
         }
 
-        const profile_pictures = readUserFollowers.filter(user => user.profile_picture != null).map((user: any) => user.profile_picture)
-        const following_profile_pictures = readUserFollowers.filter(user => user.following.filter(user => user.profile_picture != null));
+        const profile_pictures = readUserFollowers.map((user: any) => {
+            const outerProfilePicture = user.profile_picture;
+            const followingProfilePictures = user.following.map((user: any) => user.profile_picture);
+            return [outerProfilePicture, ...followingProfilePictures];
+        }).flat().filter((profilePicture: any) => profilePicture != null);
+
         try {
             if (profile_pictures.length != 0) {
                 const profilePictureBlobs = await GetMultipleImages(profile_pictures);
@@ -48,10 +52,17 @@ export async function readSingleUserFollowerHandler(request: FastifyRequest<{ Pa
                     profilePictureToBlobMap.set(blob.blobName, blob.blobSasUri);
                 });
 
+                console.log(profilePictureToBlobMap);
+
                 readUserFollowers.forEach((user: any) => {
-                    if (profilePictureToBlobMap.has(user.profile_picture)) {
+                    if (user.profile_picture != null) {
                         user.profile_picture = profilePictureToBlobMap.get(user.profile_picture);
                     }
+                    user.following.forEach((user: any) => {
+                        if (user.profile_picture != null) {
+                            user.profile_picture = profilePictureToBlobMap.get(user.profile_picture);
+                        }
+                    });
                 });
             }
 

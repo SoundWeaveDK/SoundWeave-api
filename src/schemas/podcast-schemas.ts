@@ -54,6 +54,7 @@ const podcastResponseSchema = z.object({
     ...podcastStatistics,
     fk_user_id: z.object({
         username: z.string(),
+        profile_picture: z.string(),
     }),
 });
 
