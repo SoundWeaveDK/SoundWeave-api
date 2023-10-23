@@ -20,6 +20,7 @@ async function podcastViewedRoutes(server: FastifyInstance) {
         "/add-viewed-podcast",
         {
             preHandler: [server.authenticate],
+            onResponse: [server.analytics],
             schema: {
                 body: $ref("addPodcastViewedRequestSchema"),
                 response: {
